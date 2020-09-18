@@ -3,7 +3,7 @@
 from pico2d import *
 open_canvas()
 
-cha = load_image('../resource/character.png')
+cha = load_image('../res/character.png')
 
 for y in range(100, 501, 100):
     for x in range(100,701,100):

@@ -3,8 +3,8 @@
 from pico2d import *
 open_canvas()
 
-cha = load_image('../resource/animation_sheet.png')
-gra = load_image('../resource/grass.png')
+cha = load_image('../res/animation_sheet.png')
+gra = load_image('../res/grass.png')
 
 x = 0
 frame_idx = 0

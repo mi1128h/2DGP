@@ -3,8 +3,8 @@
 from pico2d import *
 open_canvas()
 
-cha = load_image('../resource/character.png')
-gra = load_image('../resource/grass.png')
+cha = load_image('../res/character.png')
+gra = load_image('../res/grass.png')
 
 x = 0
 while x < 800:
