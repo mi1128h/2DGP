@@ -29,8 +29,8 @@ class Boy:
                 del(tList[0])
                 self.speed = 1
 
-        self.x += self.dx
-        self.y += self.dy
+    #    self.x += self.dx
+    #    self.y += self.dy
         self.fidx = (self.fidx + 1) % 8
 
 def handle_events():
