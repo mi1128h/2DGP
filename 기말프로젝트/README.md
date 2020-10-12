@@ -72,6 +72,17 @@ Team Cherry 로고가 잠시 나오고 사라진다.
 
 ***
 ## 개발 범위
-![개발범위](https://user-images.githubusercontent.com/70762557/95712217-617f5400-0c9f-11eb-9b69-058d97087468.PNG)
+![필드](https://user-images.githubusercontent.com/70762557/95732501-cb0d5b80-0cbb-11eb-83e4-9246420f90a4.PNG)
+일반 필드에서 몹과 싸우고 지형지물을 밟아 올라가며 주인공의 기본 조작을 익힙니다.  
+만약 주인공이 체력의 개수가 0이 되어 게임 오버가 되면 다시 게임을 시작할 때 이 필드에서부터 시작하게 됩니다.   
+
+![마을](https://user-images.githubusercontent.com/70762557/95732506-cc3e8880-0cbb-11eb-8a64-135ed65ddff3.PNG)
+마을에는 의자가 있고, 의자에 앉아서 체력을 모두 회복할 수 있습니다.   
+
+![보스](https://user-images.githubusercontent.com/70762557/95732513-ce084c00-0cbb-11eb-9938-eabdebad4d92.PNG)
+보스를 처치하고 나면 보스방에서 왼쪽으로 나갈 수 있습니다. 왼쪽으로 나가면 게임 클리어 화면이 나왔다가 타이틀 화면으로 돌아갑니다. 
+
+![개발범위](https://user-images.githubusercontent.com/70762557/95712217-617f5400-0c9f-11eb-9b69-058d97087468.PNG)   
+
 ## 개발 일정
 ![개발 일정](https://user-images.githubusercontent.com/70762557/95712267-75c35100-0c9f-11eb-8a83-617bf993b1e1.PNG)
