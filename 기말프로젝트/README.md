@@ -69,3 +69,9 @@ Team Cherry 로고가 잠시 나오고 사라진다.
     - 지형지물 생성, 관리
 6. 파일 입출력
     - 진행 상황 저장 및 불러오기    
+
+***
+## 개발 범위
+![개발범위](https://user-images.githubusercontent.com/70762557/95712217-617f5400-0c9f-11eb-9b69-058d97087468.PNG)
+## 개발 일정
+![개발 일정](https://user-images.githubusercontent.com/70762557/95712267-75c35100-0c9f-11eb-8a83-617bf993b1e1.PNG)
