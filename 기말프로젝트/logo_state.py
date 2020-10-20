@@ -16,7 +16,7 @@ def update():
     gfw.world.update()
     global elapsed
     elapsed += gfw.delta_time
-    if elapsed > 2.0:
+    if elapsed > 1.5:
         gfw.change(title_state)
 
 def draw():

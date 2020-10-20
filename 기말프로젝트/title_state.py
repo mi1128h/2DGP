@@ -42,7 +42,6 @@ def handle_event(e):
             elif select == 'exit':
                 gfw.quit()
     elif e.type == SDL_MOUSEMOTION:
-        x, y=menu_pointer.pos
         if get_canvas_height() - e.y - 1 >= canvas_height // 4 - 10:
             select = 'start'
             menu_pointer.pos = (canvas_width // 2, canvas_height // 4)
@@ -50,12 +49,14 @@ def handle_event(e):
             select = 'exit'
             menu_pointer.pos = (canvas_width // 2, canvas_height // 6 + 17)
     elif e.type == SDL_MOUSEBUTTONDOWN:
-        x, y = menu_pointer.pos
+        x = canvas_width // 2
+        y1 = canvas_height // 4
+        y2 = canvas_height // 6 + 17
         if abs(e.x - x) <= 80 :
-            if abs(get_canvas_height() - e.y - 1 - y) <= 10:
+            if abs(get_canvas_height() - e.y - 1 - y1) <= 10:
                 select = 'start'
                 gfw.push(main_state)
-            elif abs(get_canvas_height() - e.y - 1 - y) <= 10:
+            elif abs(get_canvas_height() - e.y - 1 - y2) <= 10:
                 select = 'exit'
                 gfw.quit()
 
