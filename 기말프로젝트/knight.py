@@ -132,6 +132,7 @@ class FallState:
     def update(self):
         dx, dy = self.knight.delta
         dy -= gravity
+        dy = clamp(-10, dy, 15)
         self.knight.delta = (dx, dy)
         self.time += gfw.delta_time
         gobj.move_obj(self.knight)
@@ -202,7 +203,6 @@ class Knight:
     def __init__(self):
         self.pos = get_canvas_width() // 2, get_canvas_height() // 2
         self.delta = 0, 0
-        self.speed = 200
         self.time = 0
         self.fidx = 0
         self.flip = 'h'
