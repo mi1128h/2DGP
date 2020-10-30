@@ -30,16 +30,13 @@ def handle_event(e):
             gfw.quit()
 
 def exit():
-    pass
-
+    gfw.world.clear()
 
 def pause():
     pass
 
-
 def resume():
     pass
-
 
 if __name__ == '__main__':
     gfw.run_main()

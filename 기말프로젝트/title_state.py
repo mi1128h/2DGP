@@ -8,7 +8,7 @@ canvas_height = 720
 select = 'start'
 
 def enter():
-    global menu_pointer
+    global title_bg, menu_pointer
     gfw.world.init(['title_bg', 'menu_pointer'])
     title_bg = gobj.ImageObject('title_1280.png', (canvas_width // 2, canvas_height // 2))
     gfw.world.add(gfw.layer.title_bg, title_bg)
@@ -61,16 +61,15 @@ def handle_event(e):
                 gfw.quit()
 
 def exit():
-    pass
-
+    gfw.world.clear()
 
 def pause():
-    pass
-
+    gfw.world.clear()
 
 def resume():
-    pass
-
+    gfw.world.init(['title_bg', 'menu_pointer'])
+    gfw.world.add(gfw.layer.title_bg, title_bg)
+    gfw.world.add(gfw.layer.menu_pointer, menu_pointer)
 
 if __name__ == '__main__':
     gfw.run_main()
