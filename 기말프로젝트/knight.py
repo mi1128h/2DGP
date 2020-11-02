@@ -206,6 +206,7 @@ class SlashState:
 
     def __init__(self):
         self.images = load_images_name('Slash')
+        self.images_effect = load_images_name('SlashEffect')
 
     def enter(self):
         self.time = 0
@@ -216,7 +217,13 @@ class SlashState:
 
     def draw(self):
         image = self.images[self.fidx]
+        image_e = self.images_effect[self.fidx]
         image.composite_draw(0, self.knight.flip, *self.knight.pos, image.w, image.h)
+        x, y = self.knight.pos
+        if self.knight.flip == 'h':
+            image_e.composite_draw(0, self.knight.flip, x + image.w // 2, y, image_e.w, image_e.h)
+        else:
+            image_e.composite_draw(0, self.knight.flip, x - image.w // 2, y, image_e.w, image_e.h)
 
     def update(self):
         dx, dy = self.knight.delta
