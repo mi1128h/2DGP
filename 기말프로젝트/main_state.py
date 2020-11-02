@@ -1,17 +1,21 @@
 import os.path
 import gfw
 from pico2d import *
-from knight import Knight
 import gobj
+from knight import Knight
+from crawlid import Crawlid
 
 canvas_width = 1280
 canvas_height = 720
 
 def enter():
-    gfw.world.init(['bg', 'knight'])
+    gfw.world.init(['bg', 'enemy', 'knight'])
 
     bg = gobj.ImageObject('bg.png', (canvas_width // 2, canvas_height // 2))
     gfw.world.add(gfw.layer.bg, bg)
+
+    crawlid = Crawlid()
+    gfw.world.add(gfw.layer.enemy, crawlid)
 
     global knight
     knight = Knight()
