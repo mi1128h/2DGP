@@ -45,13 +45,12 @@ class IdleState:
         image.composite_draw(0, self.knight.flip, *self.knight.pos, image.w, image.h)
 
     def update(self):
-        dx, dy = self.knight.delta
         self.time += gfw.delta_time
         gobj.move_obj(self.knight)
         frame = self.time * 15
         self.fidx = int(frame) % len(self.images)
 
-        if dx != 0:
+        if self.knight.delta[0] != 0:
             self.knight.set_state(WalkState)
 
     def handle_event(self, e):
@@ -63,6 +62,8 @@ class IdleState:
             dy = 15
             self.knight.delta = (dx, dy)
             self.knight.set_state(JumpState)
+        elif pair == Knight.KEYDOWN_d:
+            self.knight.set_state(SlashState)
 
 class WalkState:
     @staticmethod
@@ -91,10 +92,8 @@ class WalkState:
         gobj.move_obj(self.knight)
         frame = self.time * 15
         self.fidx = int(frame) % len(self.images)
-        dx, dy = self.knight.delta
-        if dx == 0:
+        if self.knight.delta[0] == 0:
             self.knight.set_state(IdleState)
-
 
     def handle_event(self, e):
         pair = (e.type, e.key)
@@ -105,6 +104,8 @@ class WalkState:
             dy = 15
             self.knight.delta = (dx, dy)
             self.knight.set_state(JumpState)
+        elif pair == Knight.KEYDOWN_d:
+            self.knight.set_state(SlashState)
 
 class FallState:
     @staticmethod
@@ -122,8 +123,7 @@ class FallState:
         self.fidx = 0
 
     def exit(self):
-        dx, dy = self.knight.delta
-        self.knight.delta = (dx, 0)
+        pass
 
     def draw(self):
         image = self.images[self.fidx]
@@ -140,12 +140,16 @@ class FallState:
         self.fidx = int(frame) % len(self.images)
 
         if self.knight.pos[1] <= 80:
+            dx, dy = self.knight.delta
+            self.knight.delta = (dx, 0)
             self.knight.set_state(IdleState)
 
     def handle_event(self, e):
         pair = (e.type, e.key)
         if pair in Knight.KEY_MAP:
             self.knight.delta = gobj.point_add(self.knight.delta, Knight.KEY_MAP[pair])
+        elif pair == Knight.KEYDOWN_d:
+            self.knight.set_state(SlashState)
 
 class JumpState:
     @staticmethod
@@ -163,8 +167,7 @@ class JumpState:
         self.fidx = 0
 
     def exit(self):
-        dx, dy = self.knight.delta
-        self.knight.delta = (dx, 0)
+        pass
 
     def draw(self):
         image = self.images[self.fidx]
@@ -187,7 +190,61 @@ class JumpState:
         if pair in Knight.KEY_MAP:
             self.knight.delta = gobj.point_add(self.knight.delta, Knight.KEY_MAP[pair])
         elif pair == Knight.KEYUP_SPACE:
+            dx, dy = self.knight.delta
+            self.knight.delta = (dx, 0)
             self.knight.set_state(FallState)
+        elif pair == Knight.KEYDOWN_d:
+            self.knight.set_state(SlashState)
+
+class SlashState:
+    @staticmethod
+    def get(knight):
+        if not hasattr(SlashState, 'singleton'):
+            SlashState.singleton = SlashState()
+            SlashState.singleton.knight = knight
+        return SlashState.singleton
+
+    def __init__(self):
+        self.images = load_images_name('Slash')
+
+    def enter(self):
+        self.time = 0
+        self.fidx = 0
+
+    def exit(self):
+        pass
+
+    def draw(self):
+        image = self.images[self.fidx]
+        image.composite_draw(0, self.knight.flip, *self.knight.pos, image.w, image.h)
+
+    def update(self):
+        dx, dy = self.knight.delta
+        if self.knight.pos[1] <= 80:
+            dy = 0
+        else:
+            dy -= gravity
+            dy = clamp(-10, dy, 15)
+        self.knight.delta = (dx, dy)
+        self.time += gfw.delta_time
+        gobj.move_obj(self.knight)
+        frame = self.time * 15
+
+        if frame < len(self.images):
+            self.fidx = int(frame)
+        else:
+            if self.knight.delta[1] < 0:
+                self.knight.set_state(FallState)
+            else:
+                self.knight.set_state(IdleState)
+
+    def handle_event(self, e):
+        pair = (e.type, e.key)
+        if pair in Knight.KEY_MAP:
+            self.knight.delta = gobj.point_add(self.knight.delta, Knight.KEY_MAP[pair])
+        elif pair == Knight.KEYUP_SPACE:
+            dx, dy = self.knight.delta
+            self.knight.delta = (dx, 0)
 
 class Knight:
     KEY_MAP = {
@@ -198,7 +255,7 @@ class Knight:
     }
     KEYDOWN_SPACE = (SDL_KEYDOWN, SDLK_SPACE)
     KEYUP_SPACE = (SDL_KEYUP, SDLK_SPACE)
-    ACTIONS = ['Idle', 'Walk', 'Jump', 'Fall']
+    KEYDOWN_d = (SDL_KEYDOWN, SDLK_d)
 
     def __init__(self):
         self.pos = get_canvas_width() // 2, get_canvas_height() // 2
