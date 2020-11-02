@@ -31,6 +31,7 @@ def handle_event(e):
 
 def exit():
     gfw.world.clear()
+    gfw.unload('logo.png')
 
 def pause():
     pass

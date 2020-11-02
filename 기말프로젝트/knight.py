@@ -2,7 +2,7 @@ from pico2d import *
 import gfw
 import gobj
 
-def load_images_name(action):
+def load_images(action):
     images = {}
     count = 0
     file_fmt = '%s/knight/%s/%s (%d).png'
@@ -31,7 +31,7 @@ class IdleState:
         return IdleState.singleton
 
     def __init__(self):
-        self.images = load_images_name('Idle')
+        self.images = load_images('Idle')
 
     def enter(self):
         self.time = 0
@@ -74,7 +74,7 @@ class WalkState:
         return WalkState.singleton
 
     def __init__(self):
-        self.images = load_images_name('Walk')
+        self.images = load_images('Walk')
 
     def enter(self):
         self.time = 0
@@ -116,7 +116,7 @@ class FallState:
         return FallState.singleton
 
     def __init__(self):
-        self.images = load_images_name('Fall')
+        self.images = load_images('Fall')
 
     def enter(self):
         self.time = 0
@@ -160,7 +160,7 @@ class JumpState:
         return JumpState.singleton
 
     def __init__(self):
-        self.images = load_images_name('Jump')
+        self.images = load_images('Jump')
 
     def enter(self):
         self.time = 0
@@ -205,8 +205,8 @@ class SlashState:
         return SlashState.singleton
 
     def __init__(self):
-        self.images = load_images_name('Slash')
-        self.images_effect = load_images_name('SlashEffect')
+        self.images = load_images('Slash')
+        self.images_effect = load_images('SlashEffect')
 
     def enter(self):
         self.time = 0
