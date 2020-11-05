@@ -253,6 +253,51 @@ class SlashState:
             dx, dy = self.knight.delta
             self.knight.delta = (dx, 0)
 
+class RecoilState:
+    @staticmethod
+    def get(knight):
+        if not hasattr(RecoilState, 'singleton'):
+            RecoilState.singleton = RecoilState()
+            RecoilState.singleton.knight = knight
+        return RecoilState.singleton
+
+    def __init__(self):
+        self.images = load_images('Recoil')
+
+    def enter(self):
+        self.time = 0
+        self.fidx = 0
+        self.tempdelta = self.knight.delta
+
+    def exit(self):
+        self.knight.delta = self.tempdelta
+
+    def draw(self):
+        image = self.images[self.fidx]
+        image.composite_draw(0, self.knight.flip, *self.knight.pos, image.w, image.h)
+
+    def update(self):
+        if self.knight.flip == 'h':
+            self.knight.delta = (-2, 1)
+        elif self.knight.flip == '':
+            self.knight.delta = (2, 1)
+        gobj.move_obj(self.knight)
+        self.time += gfw.delta_time
+        gobj.move_obj(self.knight)
+        frame = self.time * 15
+        self.fidx = int(frame) % len(self.images)
+
+        if frame < len(self.images):
+            self.fidx = int(frame)
+        else:
+            self.knight.set_state(FallState)
+
+    def handle_event(self, e):
+        pair = (e.type, e.key)
+        if pair in Knight.KEY_MAP:
+            self.tempdelta = gobj.point_add(self.tempdelta, Knight.KEY_MAP[pair])
+        pass
+
 class Knight:
     KEY_MAP = {
         (SDL_KEYDOWN, SDLK_LEFT):  (-3, 0),
@@ -296,4 +341,4 @@ class Knight:
 
     def get_bb(self):
         x,y = self.pos
-        return x - 40, y - 50, x + 40, y + 40
+        return x - 20, y - 60, x + 20, y + 50

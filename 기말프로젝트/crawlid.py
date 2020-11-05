@@ -66,3 +66,7 @@ class Crawlid:
 
     def handle_event(self):
         pass
+
+    def get_bb(self):
+        x, y = self.pos
+        return x - 50, y - 30, x + 50, y + 30
