@@ -47,7 +47,7 @@ class IdleState:
     def update(self):
         self.time += gfw.delta_time
         gobj.move_obj(self.knight)
-        frame = self.time * 15
+        frame = self.time * len(self.images) * 2
         self.fidx = int(frame) % len(self.images)
 
         if self.knight.delta[0] != 0:
@@ -90,7 +90,7 @@ class WalkState:
     def update(self):
         self.time += gfw.delta_time
         gobj.move_obj(self.knight)
-        frame = self.time * 15
+        frame = self.time * len(self.images) * 2
         self.fidx = int(frame) % len(self.images)
         if self.knight.delta[0] == 0:
             self.knight.set_state(IdleState)
@@ -136,7 +136,7 @@ class FallState:
         self.knight.delta = (dx, dy)
         self.time += gfw.delta_time
         gobj.move_obj(self.knight)
-        frame = self.time * 15
+        frame = self.time * len(self.images) * 2
         self.fidx = int(frame) % len(self.images)
 
         if self.knight.pos[1] <= 80:
@@ -179,7 +179,7 @@ class JumpState:
         self.knight.delta = (dx, dy)
         self.time += gfw.delta_time
         gobj.move_obj(self.knight)
-        frame = self.time * 15
+        frame = self.time * len(self.images) * 2 - 1
         self.fidx = int(frame) % len(self.images)
 
         if dy <= 0:
@@ -235,7 +235,7 @@ class SlashState:
         self.knight.delta = (dx, dy)
         self.time += gfw.delta_time
         gobj.move_obj(self.knight)
-        frame = self.time * 15
+        frame = self.time * len(self.images) * 2
 
         if frame < len(self.images):
             self.fidx = int(frame)
@@ -284,7 +284,7 @@ class RecoilState:
         gobj.move_obj(self.knight)
         self.time += gfw.delta_time
         gobj.move_obj(self.knight)
-        frame = self.time * 15
+        frame = self.time * len(self.images) * 2
         self.fidx = int(frame) % len(self.images)
 
         if frame < len(self.images):
