@@ -124,6 +124,7 @@ class FallState:
     def enter(self):
         self.time = 0
         self.fidx = 0
+        self.clockFlap = False
 
     def exit(self):
         pass
@@ -140,7 +141,12 @@ class FallState:
         self.time += gfw.delta_time
         gobj.move_obj(self.knight)
         frame = self.time * len(self.images) * 2
-        self.fidx = int(frame) % len(self.images)
+        if self.clockFlap == False:
+            self.fidx = int(frame) % len(self.images)
+            if self.fidx == len(self.images) - 1:
+                self.clockFlap = True
+        else:
+            self.fidx = int(frame) % 2 + (len(self.images) - 2)
 
         if self.knight.pos[1] <= 80:
             dx, dy = self.knight.delta
@@ -308,10 +314,11 @@ class Knight:
     KEYUP_SPACE = (SDL_KEYUP, SDLK_SPACE)
     KEYDOWN_d = (SDL_KEYDOWN, SDLK_d)
     images = {}
+    Unbeatable_Time = 2.0
     def __init__(self):
-        self.pos = get_canvas_width() // 2, get_canvas_height() // 2
+        self.pos = get_canvas_width() // 2, get_canvas_height()
         self.delta = 0, 0
-        self.time = 0
+        self.time = 0.0
         self.fidx = 0
         self.flip = 'h'
         self.mask = 5
@@ -329,6 +336,7 @@ class Knight:
 
     def update(self):
         self.state.update()
+        self.time += gfw.delta_time
 
     def handle_event(self, e):
         # flip 설정

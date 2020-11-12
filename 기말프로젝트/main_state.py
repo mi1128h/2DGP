@@ -22,10 +22,12 @@ def enter():
     gfw.world.add(gfw.layer.knight, knight)
 
 def check_collide(e):
+    global knight
     if gobj.collides_box(knight, e):
         if e.action != 'Death':
-            if knight.state != RecoilState:
+            if knight.time > Knight.Unbeatable_Time:
                 if knight.mask > 1:
+                    knight.time = 0.0
                     knight.mask -= 1
                     print(knight.mask)
                     knight.set_state(RecoilState)
