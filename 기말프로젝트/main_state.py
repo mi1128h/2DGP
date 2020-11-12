@@ -9,7 +9,7 @@ canvas_width = 1280
 canvas_height = 720
 
 def enter():
-    gfw.world.init(['bg', 'enemy', 'knight'])
+    gfw.world.init(['bg', 'platform', 'enemy', 'knight', 'slash', 'ui'])
 
     bg = gobj.ImageObject('bg.png', (canvas_width // 2, canvas_height // 2))
     gfw.world.add(gfw.layer.bg, bg)
@@ -25,7 +25,22 @@ def check_collide(e):
     if gobj.collides_box(knight, e):
         if e.action != 'Death':
             if knight.state != RecoilState:
-                knight.set_state(RecoilState)
+                if knight.mask > 1:
+                    knight.mask -= 1
+                    print(knight.mask)
+                    knight.set_state(RecoilState)
+               # elif knight.mask == 1:
+                    #knight.set_state(DeathState)
+                return
+
+    for s in gfw.world.objects_at(gfw.layer.slash):
+        if gobj.collides_box(s, e):
+            if e.action != 'Death':
+                e.health -= 5
+                if knight.flip == 'h':
+                    e.pos = gobj.point_add(e.pos, (100, 0))
+                elif knight.flip == '':
+                    e.pos = gobj.point_add(e.pos, (-100, 0))
 
 def update():
     gfw.world.update()

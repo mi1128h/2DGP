@@ -1,9 +1,12 @@
 from pico2d import *
 import gfw
 import gobj
+from slash import Slash
 
 def load_images(action):
-    images = {}
+    if action in Knight.images:
+        return Knight.images[action]
+
     count = 0
     file_fmt = '%s/knight/%s/%s (%d).png'
     action_images = []
@@ -16,9 +19,9 @@ def load_images(action):
         else:
             break
         count += 1
-    images = action_images
-    print('%d images loaded' % (count))
-    return images
+    Knight.images[action] = action_images
+    print('%s %d images loaded' % (action, count))
+    return action_images
 
 gravity = 0.4
 
@@ -211,19 +214,15 @@ class SlashState:
     def enter(self):
         self.time = 0
         self.fidx = 0
+        slash = Slash(self.knight)
+        gfw.world.add(gfw.layer.slash, slash)
 
     def exit(self):
         pass
 
     def draw(self):
         image = self.images[self.fidx]
-        image_e = self.images_effect[self.fidx]
         image.composite_draw(0, self.knight.flip, *self.knight.pos, image.w, image.h)
-        x, y = self.knight.pos
-        if self.knight.flip == 'h':
-            image_e.composite_draw(0, self.knight.flip, x + image.w // 2, y, image_e.w, image_e.h)
-        else:
-            image_e.composite_draw(0, self.knight.flip, x - image.w // 2, y, image_e.w, image_e.h)
 
     def update(self):
         dx, dy = self.knight.delta
@@ -235,7 +234,7 @@ class SlashState:
         self.knight.delta = (dx, dy)
         self.time += gfw.delta_time
         gobj.move_obj(self.knight)
-        frame = self.time * len(self.images) * 2
+        frame = self.time * len(self.images) * 4
 
         if frame < len(self.images):
             self.fidx = int(frame)
@@ -308,13 +307,14 @@ class Knight:
     KEYDOWN_SPACE = (SDL_KEYDOWN, SDLK_SPACE)
     KEYUP_SPACE = (SDL_KEYUP, SDLK_SPACE)
     KEYDOWN_d = (SDL_KEYDOWN, SDLK_d)
-
+    images = {}
     def __init__(self):
         self.pos = get_canvas_width() // 2, get_canvas_height() // 2
         self.delta = 0, 0
         self.time = 0
         self.fidx = 0
         self.flip = 'h'
+        self.mask = 5
         self.state = None
         self.set_state(FallState)
 
@@ -331,13 +331,14 @@ class Knight:
         self.state.update()
 
     def handle_event(self, e):
-        self.state.handle_event(e)
         # flip 설정
         pair = (e.type, e.key)
         if pair == (SDL_KEYDOWN, SDLK_LEFT):
            self.flip = ''
         elif pair == (SDL_KEYDOWN, SDLK_RIGHT):
            self.flip = 'h'
+
+        self.state.handle_event(e)
 
     def get_bb(self):
         x,y = self.pos
