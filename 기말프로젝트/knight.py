@@ -188,8 +188,11 @@ class JumpState:
         self.knight.delta = (dx, dy)
         self.time += gfw.delta_time
         gobj.move_obj(self.knight)
-        frame = self.time * len(self.images) * 2 - 1
+        tfidx = self.fidx
+        frame = self.time * len(self.images) * 2
         self.fidx = int(frame) % len(self.images)
+        if self.fidx < tfidx:
+            self.fidx = tfidx
 
         if dy <= 0:
             self.knight.set_state(FallState)
