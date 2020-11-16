@@ -31,6 +31,8 @@ class IdleState:
         if not hasattr(IdleState, 'singleton'):
             IdleState.singleton = IdleState()
             IdleState.singleton.knight = knight
+        else:
+            IdleState.singleton.knight = knight
         return IdleState.singleton
 
     def __init__(self):
@@ -74,6 +76,8 @@ class WalkState:
         if not hasattr(WalkState, 'singleton'):
             WalkState.singleton = WalkState()
             WalkState.singleton.knight = knight
+        else:
+            WalkState.singleton.knight = knight
         return WalkState.singleton
 
     def __init__(self):
@@ -115,6 +119,8 @@ class FallState:
     def get(knight):
         if not hasattr(FallState, 'singleton'):
             FallState.singleton = FallState()
+            FallState.singleton.knight = knight
+        else:
             FallState.singleton.knight = knight
         return FallState.singleton
 
@@ -166,6 +172,8 @@ class JumpState:
         if not hasattr(JumpState, 'singleton'):
             JumpState.singleton = JumpState()
             JumpState.singleton.knight = knight
+        else:
+            JumpState.singleton.knight = knight
         return JumpState.singleton
 
     def __init__(self):
@@ -213,6 +221,8 @@ class SlashState:
     def get(knight):
         if not hasattr(SlashState, 'singleton'):
             SlashState.singleton = SlashState()
+            SlashState.singleton.knight = knight
+        else:
             SlashState.singleton.knight = knight
         return SlashState.singleton
 
@@ -267,6 +277,8 @@ class RecoilState:
         if not hasattr(RecoilState, 'singleton'):
             RecoilState.singleton = RecoilState()
             RecoilState.singleton.knight = knight
+        else:
+            RecoilState.singleton.knight = knight
         return RecoilState.singleton
 
     def __init__(self):
@@ -304,6 +316,44 @@ class RecoilState:
         pair = (e.type, e.key)
         if pair in Knight.KEY_MAP:
             self.tempdelta = gobj.point_add(self.tempdelta, Knight.KEY_MAP[pair])
+        pass
+
+class DeathState:
+    @staticmethod
+    def get(knight):
+        if not hasattr(DeathState, 'singleton'):
+            DeathState.singleton = DeathState()
+            DeathState.singleton.knight = knight
+        else:
+            DeathState.singleton.knight = knight
+        return DeathState.singleton
+
+    def __init__(self):
+        self.images = load_images('Death')
+
+    def enter(self):
+        self.time = 0
+        self.fidx = 0
+        self.knight.delta = (0, 0)
+
+    def exit(self):
+        pass
+
+    def draw(self):
+        image = self.images[self.fidx]
+        image.composite_draw(0, self.knight.flip, *self.knight.pos, image.w, image.h)
+
+    def update(self):
+        self.time += gfw.delta_time
+        gobj.move_obj(self.knight)
+        frame = self.time * len(self.images)
+
+        if frame < len(self.images):
+            self.fidx = int(frame)
+        else:
+            self.knight.mask = 0
+
+    def handle_event(self, e):
         pass
 
 class Knight:

@@ -2,8 +2,9 @@ import os.path
 import gfw
 from pico2d import *
 import gobj
-from knight import Knight, RecoilState
+from knight import Knight, RecoilState, DeathState
 from crawlid import Crawlid
+import game_end_state
 
 canvas_width = 1280
 canvas_height = 720
@@ -31,8 +32,8 @@ def check_collide(e):
                     knight.mask -= 1
                     print(knight.mask)
                     knight.set_state(RecoilState)
-               # elif knight.mask == 1:
-                    #knight.set_state(DeathState)
+                elif knight.mask == 1:
+                    knight.set_state(DeathState)
                 return
 
     for s in gfw.world.objects_at(gfw.layer.slash):
@@ -48,6 +49,10 @@ def update():
     gfw.world.update()
     for e in gfw.world.objects_at(gfw.layer.enemy):
         check_collide(e)
+
+    global knight
+    if knight.mask == 0:
+        gfw.change(game_end_state)
 
 def draw():
     gfw.world.draw()
