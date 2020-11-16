@@ -19,6 +19,9 @@ class Crawlid:
 
     @staticmethod
     def load_images():
+        if len(Crawlid.images) != 0:
+            return Crawlid.images
+
         images = {}
         count = 0
         file_fmt = '%s/crawlid/%s/%s (%d).png'
