@@ -366,7 +366,7 @@ class Knight:
     KEYUP_SPACE = (SDL_KEYUP, SDLK_SPACE)
     KEYDOWN_d = (SDL_KEYDOWN, SDLK_d)
     images = {}
-    Unbeatable_Time = 2.0
+    Unbeatable_Time = 1.5
     def __init__(self):
         if len(Knight.images) == 0:
             Knight.load_all_images()

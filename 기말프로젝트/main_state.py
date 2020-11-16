@@ -27,8 +27,8 @@ def check_collide(e):
     if gobj.collides_box(knight, e):
         if e.action != 'Death':
             if knight.time > Knight.Unbeatable_Time:
+                knight.time = 0.0
                 if knight.mask > 1:
-                    knight.time = 0.0
                     knight.mask -= 1
                     print(knight.mask)
                     knight.set_state(RecoilState)
