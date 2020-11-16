@@ -34,7 +34,7 @@ class Crawlid:
                 count += 1
             images[action] = action_images
         Crawlid.images = images
-        print('%d images loaded' % (count))
+        print('crawlid %d images loaded' % (count))
         return images
 
     def draw(self):

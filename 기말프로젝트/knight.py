@@ -316,7 +316,6 @@ class RecoilState:
         pair = (e.type, e.key)
         if pair in Knight.KEY_MAP:
             self.tempdelta = gobj.point_add(self.tempdelta, Knight.KEY_MAP[pair])
-        pass
 
 class DeathState:
     @staticmethod
@@ -369,6 +368,8 @@ class Knight:
     images = {}
     Unbeatable_Time = 2.0
     def __init__(self):
+        if len(Knight.images) == 0:
+            Knight.load_all_images()
         self.pos = get_canvas_width() // 2, get_canvas_height()
         self.delta = 0, 0
         self.time = 0.0
@@ -377,6 +378,11 @@ class Knight:
         self.mask = 5
         self.state = None
         self.set_state(FallState)
+
+    @staticmethod
+    def load_all_images():
+        for action in ['Idle', 'Walk', 'Fall', 'Jump', 'Slash', 'SlashEffect', 'Recoil', 'Death']:
+            load_images(action)
 
     def set_state(self, clazz):
         if self.state != None:
