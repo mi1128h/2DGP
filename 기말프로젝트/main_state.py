@@ -34,11 +34,12 @@ def check_collide(e):
                     knight.set_state(RecoilState)
                 elif knight.mask == 1:
                     knight.set_state(DeathState)
-                return
+                    return
 
     for s in gfw.world.objects_at(gfw.layer.slash):
         if gobj.collides_box(s, e):
-            if e.action != 'Death':
+            if e.action != 'Death' and e.slashed != s:
+                e.slashed = s
                 e.health -= 5
                 if knight.flip == 'h':
                     e.pos = gobj.point_add(e.pos, (100, 0))

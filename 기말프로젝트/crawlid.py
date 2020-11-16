@@ -5,6 +5,8 @@ import gobj
 class Crawlid:
     images = {}
     def __init__(self):
+        if len(Crawlid.images) == 0:
+            Crawlid.load_images()
         self.health = 10
         self.pos = (1200, 50)
         self.delta = (-1, 0)
@@ -12,9 +14,8 @@ class Crawlid:
         self.fidx = 0
         self.flip = ''
         self.action = 'Walk'
+        self.slashed = None
         self.images = Crawlid.load_images()
-        if len(Crawlid.images) == 0:
-            Crawlid.load_images()
 
     @staticmethod
     def load_images():
