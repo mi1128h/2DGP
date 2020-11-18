@@ -4,6 +4,7 @@ from pico2d import *
 import gobj
 from knight import Knight, RecoilState, DeathState
 from crawlid import Crawlid
+from HUD import Frame
 import game_end_state
 
 canvas_width = 1280
@@ -22,17 +23,22 @@ def enter():
     knight = Knight()
     gfw.world.add(gfw.layer.knight, knight)
 
+    global frame
+    frame = Frame(knight)
+    gfw.world.add(gfw.layer.ui, frame)
+
 def check_collide(e):
-    global knight
+    global knight, frame
     if gobj.collides_box(knight, e):
         if e.action != 'Death':
             if knight.time > Knight.Unbeatable_Time:
                 knight.time = 0.0
                 if knight.mask > 1:
                     knight.mask -= 1
-                    print(knight.mask)
+                    frame.mask_stack[knight.mask].set_action('Break')
                     knight.set_state(RecoilState)
                 elif knight.mask == 1:
+                    frame.mask_stack[0].set_action('Break')
                     knight.set_state(DeathState)
                     return
 
@@ -51,8 +57,8 @@ def update():
     for e in gfw.world.objects_at(gfw.layer.enemy):
         check_collide(e)
 
-    global knight
-    if knight.mask == 0:
+    global frame
+    if frame.cracked_time >= 0.5:
         gfw.change(game_end_state)
 
 def draw():
