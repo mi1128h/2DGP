@@ -404,8 +404,12 @@ class Knight:
            self.flip = ''
         elif pair == (SDL_KEYDOWN, SDLK_RIGHT):
            self.flip = 'h'
-
         self.state.handle_event(e)
+        if e.type == SDL_KEYUP:
+            if self.delta[0] > 0:
+                self.flip = 'h'
+            elif self.delta[0] < 0:
+                self.flip = ''
 
     def get_bb(self):
         x,y = self.pos
