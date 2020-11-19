@@ -1,6 +1,6 @@
 import gfw
 from pico2d import *
-import main_state
+import loading_state
 import gobj
 
 canvas_width = 1280
@@ -10,7 +10,7 @@ select = 'start'
 def enter():
     global title_bg, menu_pointer
     gfw.world.init(['title_bg', 'menu_pointer'])
-    title_bg = gobj.ImageObject('title_1280.png', (canvas_width // 2, canvas_height // 2))
+    title_bg = gobj.ImageObject('title.png', (canvas_width // 2, canvas_height // 2))
     gfw.world.add(gfw.layer.title_bg, title_bg)
 
     menu_pointer = gobj.ImageObject('menu_pointer.png', (canvas_width // 2, canvas_height // 4))
@@ -38,7 +38,7 @@ def handle_event(e):
             menu_pointer.pos = (canvas_width // 2, canvas_height // 6 + 17)
         elif e.key == SDLK_RETURN:
             if select == 'start':
-                gfw.push(main_state)
+                gfw.push(loading_state)
             elif select == 'exit':
                 gfw.quit()
     elif e.type == SDL_MOUSEMOTION:
@@ -55,7 +55,7 @@ def handle_event(e):
         if abs(e.x - x) <= 80 :
             if abs(get_canvas_height() - e.y - 1 - y1) <= 10:
                 select = 'start'
-                gfw.push(main_state)
+                gfw.push(loading_state)
             elif abs(get_canvas_height() - e.y - 1 - y2) <= 10:
                 select = 'exit'
                 gfw.quit()
