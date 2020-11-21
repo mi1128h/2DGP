@@ -2,7 +2,7 @@ from pico2d import *
 import time
 import gfw.image
 import gfw.world
-
+import gfw.sound
 
 running = True
 stack = None

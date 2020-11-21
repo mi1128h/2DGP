@@ -2,8 +2,19 @@ from pico2d import *
 import gfw
 import gobj
 
+def load_sound(sound):
+    if sound in Crawlid.sounds:
+        return Crawlid.sounds[sound]
+
+    file_fmt = 'res/Sound/enemy/%s'
+    fn = file_fmt % sound
+    s = gfw.sound.load_w(fn)
+    Crawlid.sounds[sound] = s
+    print('%s sound loaded' % (sound))
+
 class Crawlid:
     images = {}
+    sounds = {}
     def __init__(self):
         if len(Crawlid.images) == 0:
             Crawlid.load_images()
@@ -16,6 +27,9 @@ class Crawlid:
         self.action = 'Walk'
         self.slashed = None
         self.images = Crawlid.load_images()
+        self.sounds = Crawlid.load_sounds()
+        self.sounds['crawler.wav'].set_volume(50)
+        self.sounds['crawler.wav'].repeat_play()
 
     @staticmethod
     def load_images():
@@ -41,6 +55,13 @@ class Crawlid:
         print('crawlid %d images loaded' % (count))
         return images
 
+    @staticmethod
+    def load_sounds():
+        load_sound('crawler.wav')
+        load_sound('enemy_damage.wav')
+        load_sound('enemy_death_sword.wav')
+        return Crawlid.sounds
+
     def draw(self):
         images = self.images[self.action]
         image = images[self.fidx % len(images)]
@@ -59,6 +80,8 @@ class Crawlid:
             frame = self.time * 10
             self.fidx = int(frame)
             if self.health == 0:
+                self.sounds['enemy_death_sword.wav'].play()
+                self.sounds['crawler.wav'].set_volume(0)
                 self.action = 'Death'
                 self.time = 0
                 self.delta = (0, 0)

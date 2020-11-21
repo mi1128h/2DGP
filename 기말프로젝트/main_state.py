@@ -27,6 +27,13 @@ def enter():
     frame = Frame(knight)
     gfw.world.add(gfw.layer.ui, frame)
 
+    global bgm, opening_sting
+    bgm = gfw.sound.load_m('res/Sound/cave_wind_loop.mp3')
+    opening_sting = gfw.sound.load_w('res/Sound/S75 Opening Sting-08.wav')
+    opening_sting.set_volume(50)
+    bgm.repeat_play()
+    opening_sting.play()
+
 def check_collide(e):
     global knight, frame
     if gobj.collides_box(knight, e):
@@ -37,6 +44,12 @@ def check_collide(e):
                     knight.mask -= 1
                     frame.mask_stack[knight.mask].set_action('Break')
                     knight.set_state(RecoilState)
+                    if knight.pos[0] <= e.pos[0]:
+                        knight.flip = 'h'
+                        knight.delta = (-2, 1)
+                    else:
+                        knight.flip = ''
+                        knight.delta = (2, 1)
                 elif knight.mask == 1:
                     frame.mask_stack[0].set_action('Break')
                     knight.set_state(DeathState)
@@ -45,6 +58,7 @@ def check_collide(e):
     for s in gfw.world.objects_at(gfw.layer.slash):
         if gobj.collides_box(s, e):
             if e.action != 'Death' and e.slashed != s:
+                e.sounds['enemy_damage.wav'].play()
                 e.slashed = s
                 e.health -= 5
                 if knight.flip == 'h':
@@ -58,7 +72,7 @@ def update():
         check_collide(e)
 
     global frame
-    if frame.cracked_time >= 0.5:
+    if frame.cracked_time >= 1.5:
         gfw.change(game_end_state)
 
 def draw():
@@ -67,7 +81,6 @@ def draw():
 
 def handle_event(e):
     global knight
-    # prev_dx = boy.dx
     if e.type == SDL_QUIT:
         gfw.quit()
     elif e.type == SDL_KEYDOWN:
@@ -77,6 +90,15 @@ def handle_event(e):
     knight.handle_event(e)
 
 def exit():
+    global bgm, opening_sting
+    bgm.stop()
+    gfw.sound.unload_m('res/Sound/cave_wind_loop.mp3')
+    gfw.sound.unload_w('res/Sound/S75 Opening Sting-08.wav')
+
+    for e in gfw.world.objects_at(gfw.layer.enemy):
+        for w in e.sounds:
+            e.sounds[w].set_volume(0)
+
     gfw.world.clear()
 
 def pause():

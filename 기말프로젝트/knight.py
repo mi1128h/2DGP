@@ -22,6 +22,16 @@ def load_images(action):
     Knight.images[action] = action_images
     print('%s %d images loaded' % (action, count))
     return action_images
+def load_sound(sound):
+    if sound in Knight.sounds:
+        return Knight.sounds[sound]
+
+    file_fmt = 'res/Sound/knight/%s'
+    fn = file_fmt % sound
+    s = gfw.sound.load_w(fn)
+    Knight.sounds[sound] = s
+    print('%s sound loaded' % (sound))
+    return s
 
 gravity = 0.4
 
@@ -82,10 +92,12 @@ class WalkState:
 
     def __init__(self):
         self.images = load_images('Walk')
+        self.walk_sound = load_sound('hero_walk_footsteps_stone.wav')
 
     def enter(self):
         self.time = 0
         self.fidx = 0
+        self.walk_sound.play()
 
     def exit(self):
         pass
@@ -126,6 +138,7 @@ class FallState:
 
     def __init__(self):
         self.images = load_images('Fall')
+        self.land_sound = load_sound('hero_land_soft.wav')
 
     def enter(self):
         self.time = 0
@@ -133,6 +146,7 @@ class FallState:
         self.clockFlap = False
 
     def exit(self):
+        self.land_sound.play()
         pass
 
     def draw(self):
@@ -178,10 +192,12 @@ class JumpState:
 
     def __init__(self):
         self.images = load_images('Jump')
+        self.jump_sound = load_sound('hero_jump.wav')
 
     def enter(self):
         self.time = 0
         self.fidx = 0
+        self.jump_sound.play()
 
     def exit(self):
         pass
@@ -229,12 +245,14 @@ class SlashState:
     def __init__(self):
         self.images = load_images('Slash')
         self.images_effect = load_images('SlashEffect')
+        self.slash_sound = load_sound('sword_1.wav')
 
     def enter(self):
         self.time = 0
         self.fidx = 0
         slash = Slash(self.knight)
         gfw.world.add(gfw.layer.slash, slash)
+        self.slash_sound.play()
 
     def exit(self):
         pass
@@ -283,11 +301,13 @@ class RecoilState:
 
     def __init__(self):
         self.images = load_images('Recoil')
+        self.damage_sound = load_sound('hero_damage.wav')
 
     def enter(self):
         self.time = 0
         self.fidx = 0
         self.tempdelta = self.knight.delta
+        self.damage_sound.play()
 
     def exit(self):
         self.knight.delta = self.tempdelta
@@ -297,10 +317,6 @@ class RecoilState:
         image.composite_draw(0, self.knight.flip, *self.knight.pos, image.w, image.h)
 
     def update(self):
-        if self.knight.flip == 'h':
-            self.knight.delta = (-2, 1)
-        elif self.knight.flip == '':
-            self.knight.delta = (2, 1)
         gobj.move_obj(self.knight)
         self.time += gfw.delta_time
         gobj.move_obj(self.knight)
@@ -329,11 +345,13 @@ class DeathState:
 
     def __init__(self):
         self.images = load_images('Death')
+        self.death_sound = load_sound('hero_death_extra_details.wav')
 
     def enter(self):
         self.time = 0
         self.fidx = 0
         self.knight.delta = (0, 0)
+        self.death_sound.play()
 
     def exit(self):
         pass
@@ -366,6 +384,7 @@ class Knight:
     KEYUP_SPACE = (SDL_KEYUP, SDLK_SPACE)
     KEYDOWN_d = (SDL_KEYDOWN, SDLK_d)
     images = {}
+    sounds = {}
     Unbeatable_Time = 1.5
     def __init__(self):
         if len(Knight.images) == 0:

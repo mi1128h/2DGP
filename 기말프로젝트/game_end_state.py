@@ -13,6 +13,10 @@ def enter():
     over = gobj.ImageObject('GameOver.png', (canvas_width // 2, canvas_height // 2))
     gfw.world.add(gfw.layer.result, over)
 
+    global end_bgm
+    end_bgm = gfw.sound.load_m('res/Sound/Hollow Shade Music.mp3')
+    end_bgm.repeat_play()
+
 def update():
     pass
 
@@ -26,6 +30,9 @@ def handle_event(e):
        gfw.quit()
 
 def exit():
+    global end_bgm
+    end_bgm.stop()
+    gfw.sound.unload_m('res/Sound/Hollow Shade Music.mp3')
     gfw.world.clear()
 
 def pause():
