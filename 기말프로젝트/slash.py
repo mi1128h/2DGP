@@ -12,7 +12,7 @@ class Slash:
 
     def draw(self):
         image = self.images[self.fidx]
-        x, y = self.k.pos
+        x, y = self.k.bg.to_screen(self.k.pos)
         if self.k.flip == 'h':
             image.composite_draw(0, self.k.flip, x + image.w // 3, y, image.w, image.h)
         else:
@@ -31,7 +31,7 @@ class Slash:
         pass
 
     def get_bb(self):
-        x, y = self.k.pos
+        x, y = self.k.bg.to_screen(self.k.pos)
         if self.k.flip == 'h':
             return x + 10, y - 40, x + 130, y + 40
         elif self.k.flip == '':

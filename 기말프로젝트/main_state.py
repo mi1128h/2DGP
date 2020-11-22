@@ -6,6 +6,7 @@ from knight import Knight, RecoilState, DeathState
 from crawlid import Crawlid
 from HUD import Frame
 import game_end_state
+from background import FixedBackground
 
 canvas_width = 1280
 canvas_height = 720
@@ -13,14 +14,17 @@ canvas_height = 720
 def enter():
     gfw.world.init(['bg', 'platform', 'enemy', 'knight', 'slash', 'ui'])
 
-    bg = gobj.ImageObject('bg.png', (canvas_width // 2, canvas_height // 2))
+    bg = FixedBackground('res/Dirtmouth_compressed.png')
     gfw.world.add(gfw.layer.bg, bg)
 
     crawlid = Crawlid()
+    crawlid.bg = bg
     gfw.world.add(gfw.layer.enemy, crawlid)
 
     global knight
     knight = Knight()
+    knight.bg = bg
+    bg.target = knight
     gfw.world.add(gfw.layer.knight, knight)
 
     global frame

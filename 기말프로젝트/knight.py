@@ -57,7 +57,7 @@ class IdleState:
 
     def draw(self):
         image = self.images[self.fidx]
-        image.composite_draw(0, self.knight.flip, *self.knight.pos, image.w, image.h)
+        image.composite_draw(0, self.knight.flip, *self.knight.pos_translated, image.w, image.h)
 
     def update(self):
         self.time += gfw.delta_time
@@ -104,7 +104,7 @@ class WalkState:
 
     def draw(self):
         image = self.images[self.fidx]
-        image.composite_draw(0, self.knight.flip, *self.knight.pos, image.w, image.h)
+        image.composite_draw(0, self.knight.flip, *self.knight.pos_translated, image.w, image.h)
 
     def update(self):
         self.time += gfw.delta_time
@@ -151,7 +151,7 @@ class FallState:
 
     def draw(self):
         image = self.images[self.fidx]
-        image.composite_draw(0, self.knight.flip, *self.knight.pos, image.w, image.h)
+        image.composite_draw(0, self.knight.flip, *self.knight.pos_translated, image.w, image.h)
 
     def update(self):
         dx, dy = self.knight.delta
@@ -204,7 +204,7 @@ class JumpState:
 
     def draw(self):
         image = self.images[self.fidx]
-        image.composite_draw(0, self.knight.flip, *self.knight.pos, image.w, image.h)
+        image.composite_draw(0, self.knight.flip, *self.knight.pos_translated, image.w, image.h)
 
     def update(self):
         dx, dy = self.knight.delta
@@ -259,7 +259,7 @@ class SlashState:
 
     def draw(self):
         image = self.images[self.fidx]
-        image.composite_draw(0, self.knight.flip, *self.knight.pos, image.w, image.h)
+        image.composite_draw(0, self.knight.flip, *self.knight.pos_translated, image.w, image.h)
 
     def update(self):
         dx, dy = self.knight.delta
@@ -276,7 +276,7 @@ class SlashState:
         if frame < len(self.images):
             self.fidx = int(frame)
         else:
-            if self.knight.delta[1] < 0:
+            if self.knight.pos[1] > 80:
                 self.knight.set_state(FallState)
             else:
                 self.knight.set_state(IdleState)
@@ -314,7 +314,7 @@ class RecoilState:
 
     def draw(self):
         image = self.images[self.fidx]
-        image.composite_draw(0, self.knight.flip, *self.knight.pos, image.w, image.h)
+        image.composite_draw(0, self.knight.flip, *self.knight.pos_translated, image.w, image.h)
 
     def update(self):
         gobj.move_obj(self.knight)
@@ -358,7 +358,7 @@ class DeathState:
 
     def draw(self):
         image = self.images[self.fidx]
-        image.composite_draw(0, self.knight.flip, *self.knight.pos, image.w, image.h)
+        image.composite_draw(0, self.knight.flip, *self.knight.pos_translated, image.w, image.h)
 
     def update(self):
         self.time += gfw.delta_time
@@ -410,9 +410,15 @@ class Knight:
         self.state.enter()
 
     def draw(self):
+        self.pos_translated = self.bg.to_screen(self.pos)
         self.state.draw()
 
     def update(self):
+        x, y = self.pos
+        bg_l, bg_b, bg_r, bg_t = self.bg.get_boundary()
+        x = clamp(bg_l, x, bg_r)
+        y = clamp(bg_b, y, bg_t)
+        self.pos = x, y
         self.state.update()
         self.time += gfw.delta_time
 
@@ -431,5 +437,5 @@ class Knight:
                 self.flip = ''
 
     def get_bb(self):
-        x,y = self.pos
+        x,y = self.bg.to_screen(self.pos)
         return x - 20, y - 60, x + 20, y + 50

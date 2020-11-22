@@ -1,0 +1,14 @@
+맵 제작 - 타일?
+
+knight-walk, wav 파일 재생 중지 어떻게?
+원하는 것: 걷는 동안 repeat_play(), 멈추면 stop().
+
+enemy가 내는 소리 - 멀어지면 안들리게?
+
+크기가 큰 png 파일 로드 안됨
+
+에러메시지??
+Exception ignored in: <function Music.__del__ at 0x0000017589B641F0>
+Traceback (most recent call last):
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python38\lib\site-packages\pico2d\pico2d.py", line 401, in __del__
+OSError: exception: access violation writing 0x00000000662461B0

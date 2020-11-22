@@ -63,16 +63,17 @@ class Crawlid:
         return Crawlid.sounds
 
     def draw(self):
+        pos = self.bg.to_screen(self.pos)
         images = self.images[self.action]
         image = images[self.fidx % len(images)]
-        image.composite_draw(0, self.flip, *self.pos, image.w, image.h)
+        image.composite_draw(0, self.flip, *pos, image.w, image.h)
 
     def update(self):
         if self.action != 'Death':
-            if self.pos[0] <= 50:
+            if self.pos[0] <= 500:
                 self.flip = 'h'
                 self.delta = (1, 0)
-            elif self.pos[0] >= get_canvas_width() - 50:
+            elif self.pos[0] >= 1000:
                 self.flip = ''
                 self.delta = (-1, 0)
             gobj.move_obj(self)
@@ -95,5 +96,5 @@ class Crawlid:
         pass
 
     def get_bb(self):
-        x, y = self.pos
+        x, y = self.bg.to_screen(self.pos)
         return x - 50, y - 30, x + 50, y + 30
