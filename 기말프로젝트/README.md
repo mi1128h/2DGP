@@ -72,17 +72,40 @@ Team Cherry 로고가 잠시 나오고 사라진다.
 
 ***
 ## 개발 범위
-![필드](https://user-images.githubusercontent.com/70762557/95732501-cb0d5b80-0cbb-11eb-83e4-9246420f90a4.PNG)
+![필드](https://user-images.githubusercontent.com/70762557/95732501-cb0d5b80-0cbb-11eb-83e4-9246420f90a4.PNG)   
 일반 필드에서 몹과 싸우고 지형지물을 밟아 올라가며 주인공의 기본 조작을 익힙니다.  
 만약 주인공이 체력의 개수가 0이 되어 게임 오버가 되면 다시 게임을 시작할 때 이 필드에서부터 시작하게 됩니다.   
 
-![마을](https://user-images.githubusercontent.com/70762557/95732506-cc3e8880-0cbb-11eb-8a64-135ed65ddff3.PNG)
+![마을](https://user-images.githubusercontent.com/70762557/95732506-cc3e8880-0cbb-11eb-8a64-135ed65ddff3.PNG)   
 마을에는 의자가 있고, 의자에 앉아서 체력을 모두 회복할 수 있습니다.   
 
-![보스](https://user-images.githubusercontent.com/70762557/95732513-ce084c00-0cbb-11eb-9938-eabdebad4d92.PNG)
+![보스](https://user-images.githubusercontent.com/70762557/95732513-ce084c00-0cbb-11eb-9938-eabdebad4d92.PNG)   
 보스를 처치하고 나면 보스방에서 왼쪽으로 나갈 수 있습니다. 왼쪽으로 나가면 게임 클리어 화면이 나왔다가 타이틀 화면으로 돌아갑니다. 
 
 ![개발범위](https://user-images.githubusercontent.com/70762557/95712217-617f5400-0c9f-11eb-9b69-058d97087468.PNG)   
 
 ## 개발 일정
-![개발 일정](https://user-images.githubusercontent.com/70762557/95712267-75c35100-0c9f-11eb-8a83-617bf993b1e1.PNG)
+![개발 일정](https://user-images.githubusercontent.com/70762557/95712267-75c35100-0c9f-11eb-8a83-617bf993b1e1.PNG)   
+
+
+***
+## 진행 상황   
+![진행상황](https://user-images.githubusercontent.com/70762557/99884718-aff71980-2c73-11eb-88c9-18d700cacf35.PNG)   
+
+## 주차별 커밋   
+![commits](https://user-images.githubusercontent.com/70762557/99884721-b1284680-2c73-11eb-94de-a4d39d6fdf98.PNG)   
+
+## Game Objects   
+### knight   
+![classes](https://user-images.githubusercontent.com/70762557/99884719-b1284680-2c73-11eb-99a5-4913d009859c.PNG)
+![관계도](https://user-images.githubusercontent.com/70762557/99884723-b1c0dd00-2c73-11eb-8fe7-cf4ca2bc1ddb.PNG)   
+주황색: 이벤트를 받으면 전환되는 관계   
+파란색: 자동으로 전환되는 관계   
+
+### ui   
+![frame](https://user-images.githubusercontent.com/70762557/99884722-b1c0dd00-2c73-11eb-8ce8-03c5011b49eb.PNG)   
+frame은 health(mask)를 가지고 있으며 mask의 애니메이션을 결정한다.   
+
+### crawlid   
+![crawlid](https://user-images.githubusercontent.com/70762557/99885111-fc435900-2c75-11eb-91c7-cd9d948d94b5.PNG)   
+walk, death 애니메이션이 있다.
