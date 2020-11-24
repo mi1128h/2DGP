@@ -14,7 +14,7 @@ canvas_height = 720
 def enter():
     gfw.world.init(['bg', 'platform', 'enemy', 'knight', 'slash', 'ui'])
 
-    bg = FixedBackground('res/Dirtmouth_compressed.png')
+    bg = FixedBackground('res/KingsPass_cut.png')
     gfw.world.add(gfw.layer.bg, bg)
 
     crawlid = Crawlid()

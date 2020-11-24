@@ -34,6 +34,7 @@ def load_sound(sound):
     return s
 
 gravity = 0.4
+floor = 480
 
 class IdleState:
     @staticmethod
@@ -168,7 +169,7 @@ class FallState:
         else:
             self.fidx = int(frame) % 2 + (len(self.images) - 2)
 
-        if self.knight.pos[1] <= 80:
+        if self.knight.pos[1] <= floor:
             dx, dy = self.knight.delta
             self.knight.delta = (dx, 0)
             self.knight.set_state(IdleState)
@@ -263,7 +264,7 @@ class SlashState:
 
     def update(self):
         dx, dy = self.knight.delta
-        if self.knight.pos[1] <= 80:
+        if self.knight.pos[1] <= floor:
             dy = 0
         else:
             dy -= gravity
@@ -276,7 +277,7 @@ class SlashState:
         if frame < len(self.images):
             self.fidx = int(frame)
         else:
-            if self.knight.pos[1] > 80:
+            if self.knight.pos[1] > floor:
                 self.knight.set_state(FallState)
             else:
                 self.knight.set_state(IdleState)
@@ -389,7 +390,7 @@ class Knight:
     def __init__(self):
         if len(Knight.images) == 0:
             Knight.load_all_images()
-        self.pos = get_canvas_width() // 2, get_canvas_height()
+        self.pos = 750, 3232
         self.delta = 0, 0
         self.time = 0.0
         self.fidx = 0

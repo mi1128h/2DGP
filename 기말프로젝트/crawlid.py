@@ -19,7 +19,7 @@ class Crawlid:
         if len(Crawlid.images) == 0:
             Crawlid.load_images()
         self.health = 10
-        self.pos = (1200, 50)
+        self.pos = (3000, 450)
         self.delta = (-1, 0)
         self.time = 0
         self.fidx = 0
@@ -66,14 +66,14 @@ class Crawlid:
         pos = self.bg.to_screen(self.pos)
         images = self.images[self.action]
         image = images[self.fidx % len(images)]
-        image.composite_draw(0, self.flip, *pos, image.w, image.h)
+        image.composite_draw(0, self.flip, *pos, image.w * 0.7, image.h * 0.7)
 
     def update(self):
         if self.action != 'Death':
-            if self.pos[0] <= 500:
+            if self.pos[0] <= 2500:
                 self.flip = 'h'
                 self.delta = (1, 0)
-            elif self.pos[0] >= 1000:
+            elif self.pos[0] >= 3500:
                 self.flip = ''
                 self.delta = (-1, 0)
             gobj.move_obj(self)
@@ -97,4 +97,4 @@ class Crawlid:
 
     def get_bb(self):
         x, y = self.bg.to_screen(self.pos)
-        return x - 50, y - 30, x + 50, y + 30
+        return x - 30, y - 20, x + 30, y + 20
