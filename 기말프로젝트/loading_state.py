@@ -81,43 +81,31 @@ def make_IMAGE_LIST(file_fmt):
         else:
             break
 
-file_fmt = 'res/crawlid/Death/Death (%d).png'
-make_IMAGE_LIST(file_fmt)
-file_fmt = 'res/crawlid/Walk/Walk (%d).png'
-make_IMAGE_LIST(file_fmt)
+file_fmt = 'res/crawlid/%s/%s'
+for a in ['Death', 'Walk']:
+    fn = file_fmt % (a, a) + ' (%d).png'
+    make_IMAGE_LIST(fn)
 
-file_fmt = 'res/HUD/Frame/Appear/Appear (%d).png'
-make_IMAGE_LIST(file_fmt)
-file_fmt = 'res/HUD/Frame/Cracked/Cracked (%d).png'
-make_IMAGE_LIST(file_fmt)
-file_fmt = 'res/HUD/Frame/Idle/Idle (%d).png'
-make_IMAGE_LIST(file_fmt)
+file_fmt = 'res/HUD/Frame/%s/%s'
+for a in ['Appear', 'Cracked', 'Idle']:
+    fn = file_fmt % (a, a) + ' (%d).png'
+    make_IMAGE_LIST(fn)
 
-file_fmt = 'res/HUD/Health/Appear/Appear (%d).png'
-make_IMAGE_LIST(file_fmt)
-file_fmt = 'res/HUD/Health/Break/Break (%d).png'
-make_IMAGE_LIST(file_fmt)
-file_fmt = 'res/HUD/Health/Empty/Empty (%d).png'
-make_IMAGE_LIST(file_fmt)
-file_fmt = 'res/HUD/Health/Idle/Idle (%d).png'
-make_IMAGE_LIST(file_fmt)
+file_fmt = 'res/HUD/Health/%s/%s'
+for a in ['Appear', 'Break', 'Empty', 'Idle']:
+    fn = file_fmt % (a, a) + ' (%d).png'
+    make_IMAGE_LIST(fn)
 
-file_fmt = 'res/knight/Death/Death (%d).png'
-make_IMAGE_LIST(file_fmt)
-file_fmt = 'res/knight/Fall/Fall (%d).png'
-make_IMAGE_LIST(file_fmt)
-file_fmt = 'res/knight/Idle/Idle (%d).png'
-make_IMAGE_LIST(file_fmt)
-file_fmt = 'res/knight/Jump/Jump (%d).png'
-make_IMAGE_LIST(file_fmt)
-file_fmt = 'res/knight/Recoil/Recoil (%d).png'
-make_IMAGE_LIST(file_fmt)
-file_fmt = 'res/knight/Slash/Slash (%d).png'
-make_IMAGE_LIST(file_fmt)
-file_fmt = 'res/knight/SlashEffect/SlashEffect (%d).png'
-make_IMAGE_LIST(file_fmt)
-file_fmt = 'res/knight/Walk/Walk (%d).png'
-make_IMAGE_LIST(file_fmt)
+file_fmt = 'res/knight/%s/%s'
+for a in ['Death', 'Fall', 'Idle', 'Jump', 'Recoil', 'Slash', 'SlashEffect', 'Walk']:
+    fn = file_fmt % (a, a) + ' (%d).png'
+    make_IMAGE_LIST(fn)
+
+file_fmt = 'res/hornet/%s/%s'
+for a in ['Dash', 'Dash end', 'Dash ready', 'Idle', 'Jump', 'Jump ready', 'Land',
+          'Run', 'Sphere', 'Sphere ball', 'Sphere end', 'Sphere ready', 'Wounded']:
+    fn = file_fmt % (a, a) + ' (%d).png'
+    make_IMAGE_LIST(fn)
 
 if __name__ == '__main__':
     gfw.run_main()
