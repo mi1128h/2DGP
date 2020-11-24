@@ -376,10 +376,10 @@ class DeathState:
 
 class Knight:
     KEY_MAP = {
-        (SDL_KEYDOWN, SDLK_LEFT):  (-3, 0),
-        (SDL_KEYDOWN, SDLK_RIGHT): (3, 0),
-        (SDL_KEYUP, SDLK_LEFT):    (3, 0),
-        (SDL_KEYUP, SDLK_RIGHT):   (-3, 0)
+        (SDL_KEYDOWN, SDLK_LEFT):  (-5, 0),
+        (SDL_KEYDOWN, SDLK_RIGHT): (5, 0),
+        (SDL_KEYUP, SDLK_LEFT):    (5, 0),
+        (SDL_KEYUP, SDLK_RIGHT):   (-5, 0)
     }
     KEYDOWN_SPACE = (SDL_KEYDOWN, SDLK_SPACE)
     KEYUP_SPACE = (SDL_KEYUP, SDLK_SPACE)

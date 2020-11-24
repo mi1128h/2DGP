@@ -20,7 +20,7 @@ class Slash:
 
     def update(self):
         self.time += gfw.delta_time
-        frame = self.time * len(self.images) * 3
+        frame = self.time * len(self.images) * 8
 
         if frame < len(self.images):
             self.fidx = int(frame)

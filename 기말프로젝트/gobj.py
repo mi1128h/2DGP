@@ -37,7 +37,7 @@ def distance_sq(point1, point2):
 
 
 def distance(point1, point2):
-    math.sqrt(distance_sq(point1, point2))
+    return math.sqrt(distance_sq(point1, point2))
 
 
 def draw_collision_box():

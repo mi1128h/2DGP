@@ -4,6 +4,7 @@ from pico2d import *
 import gobj
 from knight import Knight, RecoilState, DeathState
 from crawlid import Crawlid
+from hornet import Hornet
 from HUD import Frame
 import game_end_state
 from background import FixedBackground
@@ -12,7 +13,7 @@ canvas_width = 1280
 canvas_height = 720
 
 def enter():
-    gfw.world.init(['bg', 'platform', 'enemy', 'knight', 'slash', 'ui'])
+    gfw.world.init(['bg', 'platform', 'enemy', 'hornet', 'knight', 'slash', 'ui'])
 
     bg = FixedBackground('res/KingsPass_cut.png')
     gfw.world.add(gfw.layer.bg, bg)
@@ -30,6 +31,12 @@ def enter():
     global frame
     frame = Frame(knight)
     gfw.world.add(gfw.layer.ui, frame)
+
+    global hornet
+    hornet = Hornet()
+    hornet.bg = bg
+    hornet.target = knight
+    gfw.world.add(gfw.layer.hornet, hornet)
 
     global bgm, opening_sting
     bgm = gfw.sound.load_m('res/Sound/cave_wind_loop.mp3')
