@@ -102,8 +102,10 @@ for a in ['Death', 'Fall', 'Idle', 'Jump', 'Recoil', 'Slash', 'SlashEffect', 'Wa
     make_IMAGE_LIST(fn)
 
 file_fmt = 'res/hornet/%s/%s'
-for a in ['Dash', 'Dash end', 'Dash ready', 'Idle', 'Jump', 'Jump ready', 'Land',
-          'Run', 'Sphere', 'Sphere ball', 'Sphere end', 'Sphere ready', 'Wounded']:
+for a in ['Run', 'Idle', 'Jump', 'Jump ready', 'Land', 'Death'
+          'Dash', 'Dash end', 'Dash ready',
+          'Sphere ready', 'Sphere', 'Sphere end', 'Sphere ball',
+          'Throw ready', 'Throw', 'Throw end', 'Throw needle']:
     fn = file_fmt % (a, a) + ' (%d).png'
     make_IMAGE_LIST(fn)
 
