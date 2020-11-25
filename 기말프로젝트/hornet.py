@@ -39,7 +39,7 @@ class Hornet:
     }
 
     def __init__(self):
-        self.pos = 750, 480
+        self.pos = 1750, 480
         self.delta = 0, 0
         self.images = Hornet.load_images()
         self.sounds = Hornet.load_all_sounds()
@@ -60,7 +60,7 @@ class Hornet:
         self.fidx = 0
         self.flip = 'h'
         self.target = None
-        self.health = 10
+        self.health = 200
         self.slashed = None
         self.build_behavior_tree()
 
@@ -320,7 +320,7 @@ class Hornet:
             self.action = 'Dash'
             self.sounds[Hornet.SOUND_NUM['Dash']].play()
             self.time = 0
-            if self.pos[0] < self.target.pos[0]:
+            if self.flip == 'h':
                 self.delta = 25, 0
             else:
                 self.delta = -25, 0

@@ -346,12 +346,14 @@ class DeathState:
 
     def __init__(self):
         self.images = load_images('Death')
+        self.damage_sound = load_sound('hero_damage.wav')
         self.death_sound = load_sound('hero_death_extra_details.wav')
 
     def enter(self):
         self.time = 0
         self.fidx = 0
         self.knight.delta = (0, 0)
+        self.damage_sound.play()
         self.death_sound.play()
 
     def exit(self):
