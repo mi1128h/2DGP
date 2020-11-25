@@ -81,6 +81,9 @@ class IdleState:
         elif pair == Knight.KEYDOWN_d:
             self.knight.set_state(SlashState)
 
+    def get_name(self):
+        return 'Idle'
+
 class WalkState:
     @staticmethod
     def get(knight):
@@ -126,6 +129,9 @@ class WalkState:
             self.knight.set_state(JumpState)
         elif pair == Knight.KEYDOWN_d:
             self.knight.set_state(SlashState)
+
+    def get_name(self):
+        return 'Walk'
 
 class FallState:
     @staticmethod
@@ -181,6 +187,9 @@ class FallState:
         elif pair == Knight.KEYDOWN_d:
             self.knight.set_state(SlashState)
 
+    def get_name(self):
+        return 'Fall'
+
 class JumpState:
     @staticmethod
     def get(knight):
@@ -233,6 +242,9 @@ class JumpState:
         elif pair == Knight.KEYDOWN_d:
             self.knight.set_state(SlashState)
 
+    def get_name(self):
+        return 'Jump'
+
 class SlashState:
     @staticmethod
     def get(knight):
@@ -281,6 +293,9 @@ class SlashState:
                 self.knight.set_state(FallState)
             else:
                 self.knight.set_state(IdleState)
+
+    def get_name(self):
+        return 'Slash'
 
     def handle_event(self, e):
         pair = (e.type, e.key)
@@ -334,6 +349,9 @@ class RecoilState:
         if pair in Knight.KEY_MAP:
             self.tempdelta = gobj.point_add(self.tempdelta, Knight.KEY_MAP[pair])
 
+    def get_name(self):
+        return 'Recoil'
+
 class DeathState:
     @staticmethod
     def get(knight):
@@ -376,6 +394,9 @@ class DeathState:
     def handle_event(self, e):
         pass
 
+    def get_name(self):
+        return 'Death'
+
 class Knight:
     KEY_MAP = {
         (SDL_KEYDOWN, SDLK_LEFT):  (-5, 0),
@@ -388,7 +409,7 @@ class Knight:
     KEYDOWN_d = (SDL_KEYDOWN, SDLK_d)
     images = {}
     sounds = {}
-    Unbeatable_Time = 1.5
+    Unbeatable_Time = 1.3
     def __init__(self):
         if len(Knight.images) == 0:
             Knight.load_all_images()
@@ -425,20 +446,18 @@ class Knight:
         self.pos = x, y
         self.state.update()
         self.time += gfw.delta_time
-
-    def handle_event(self, e):
         # flip 설정
-        pair = (e.type, e.key)
-        if pair == (SDL_KEYDOWN, SDLK_LEFT):
-           self.flip = ''
-        elif pair == (SDL_KEYDOWN, SDLK_RIGHT):
-           self.flip = 'h'
-        self.state.handle_event(e)
-        if e.type == SDL_KEYUP:
+        if self.state.get_name() != 'Recoil':
+            tflip = self.flip
             if self.delta[0] > 0:
                 self.flip = 'h'
             elif self.delta[0] < 0:
                 self.flip = ''
+            else:
+                self.flip = tflip
+
+    def handle_event(self, e):
+        self.state.handle_event(e)
 
     def get_bb(self):
         x,y = self.bg.to_screen(self.pos)
