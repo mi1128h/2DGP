@@ -12,24 +12,26 @@ class Hornet:
     ACTIONS = ['Dash', 'Dash end', 'Dash ready', 'Idle', 'Jump', 'Jump ready', 'Land',
                'Run', 'Sphere', 'Sphere end', 'Sphere ready']
     RUN_MAX_TIME = 1
-    DASH_MAX_TIME = 0.5
-    DASH_COOL = 1
-    JUMP_COOL = 3
-    SPHERE_COOL = 6
-    FPS = 10
+    DASH_MAX_TIME = 0.3
+    SPHERE_MAX_TIME = 0.8
+    FPS = 13
+    SOUND_NUM = {'Death': 7, 'Dash': 8, 'Run': 9, 'Land': 10, 'Jump': 11, 'Sphere': 12}
 
     def __init__(self):
         self.pos = 750, 480
         self.delta = 0, 0
         self.images = Hornet.load_images()
+        self.sounds = Hornet.load_all_sounds()
         self.fall_image = None
         self.action = 'Idle'
         self.time = 0
         self.run_time = 0
         self.dash_time = 0
-        self.dash_cool_time = 0
-        self.jump_cool_time = 0
-        self.sphere_cool_time = 0
+        self.sphere_time = 0
+        self.start_attack = False
+        self.dash_cool = True
+        self.jump_cool = True
+        self.sphere_cool = True
         self.fidx = 0
         self.flip = 'h'
         self.target = None
@@ -53,19 +55,22 @@ class Hornet:
         x = clamp(bg_l, x, bg_r)
         y = clamp(bg_b, y, bg_t)
         self.pos = x, y
-        self.jump_cool_time += gfw.delta_time
-        self.dash_cool_time += gfw.delta_time
-        self.sphere_cool_time += gfw.delta_time
         self.bt.run()
 
     def idle(self):
-        if self.action != 'Idle':
+        self.jump_cool = random.choice([True, False])
+        self.dash_cool = random.choice([True, False])
+        self.sphere_cool = random.choice([True, False])
+        if self.start_attack:
             return BehaviorTree.FAIL
+        self.action = 'Idle'
         self.time += gfw.delta_time
         frame = self.time * Hornet.FPS
         self.fidx = int(frame) % len(self.images[self.action])
-        if gobj.distance(self.pos, self.target.pos) < 800:
-            self.action = 'Run'
+        if gobj.distance(self.pos, self.target.pos) < 500:
+            self.bgm = gfw.sound.load_m('res/Sound/hornet/S45 HORNET-110.mp3')
+            self.bgm.repeat_play()
+            self.start_attack = True
         return BehaviorTree.SUCCESS
 
     def wounded(self):
@@ -73,6 +78,7 @@ class Hornet:
             if self.health > 0:
                 return BehaviorTree.FAIL
             else:
+                self.bgm.stop()
                 self.action = 'wounded'
                 self.time = 0
         self.time += gfw.delta_time
@@ -85,9 +91,8 @@ class Hornet:
         if self.action == 'Jump' or self.action == 'Fall' or self.action == 'Land':
             return BehaviorTree.SUCCESS
         if self.action != 'Jump ready':
-            if self.jump_cool_time > Hornet.JUMP_COOL:
+            if self.jump_cool:
                 self.action = 'Jump ready'
-                self.jump_cool_time = 0
                 self.time = 0
             else:
                 return BehaviorTree.FAIL
@@ -97,11 +102,14 @@ class Hornet:
         self.fidx = int(frame) % len(self.images[self.action])
         if self.fidx == len(self.images['Jump ready']) - 1:
             self.action = 'Jump'
+            self.sounds[Hornet.SOUND_NUM['Jump']].play()
+            self.sounds[random.choice([0, 2, 4])].play()
             self.time = 0
+            dx = random.randint(1, 8)
             if self.pos[0] < self.target.pos[0]:
-                self.delta = (3, 30)
+                self.delta = (dx, 30)
             else:
-                self.delta = (-3, 30)
+                self.delta = (-dx, 30)
             return BehaviorTree.SUCCESS
         return BehaviorTree.RUNNING
 
@@ -135,7 +143,7 @@ class Hornet:
 
         dx, dy = self.delta
         dy -= gravity
-        dy = clamp(-10, dy, 15)
+        dy = clamp(-15, dy, 15)
         self.delta = (dx, dy)
         gobj.move_obj(self)
         self.time += gfw.delta_time
@@ -143,6 +151,7 @@ class Hornet:
             x, y = self.pos
             self.pos = x, 480
             self.action = 'Land'
+            self.sounds[Hornet.SOUND_NUM['Land']].play()
             return BehaviorTree.SUCCESS
         return BehaviorTree.RUNNING
 
@@ -163,9 +172,9 @@ class Hornet:
         if self.action == 'Sphere' or self.action == 'Sphere end':
             return BehaviorTree.SUCCESS
         if self.action != 'Sphere ready':
-            if self.sphere_cool_time > Hornet.SPHERE_COOL:
+            if self.sphere_cool:
                 self.action = 'Sphere ready'
-                self.sphere_cool_time = 0
+                self.sounds[random.choice([1, 3, 5, 6])].play()
                 self.time = 0
             else:
                 return BehaviorTree.FAIL
@@ -175,6 +184,7 @@ class Hornet:
         self.fidx = int(frame) % len(self.images[self.action])
         if self.fidx == len(self.images['Sphere ready']) - 1:
             self.action = 'Sphere'
+            self.sounds[Hornet.SOUND_NUM['Sphere']].play()
             self.time = 0
             return BehaviorTree.SUCCESS
         return BehaviorTree.RUNNING
@@ -186,9 +196,11 @@ class Hornet:
             return BehaviorTree.FAIL
 
         self.time += gfw.delta_time
+        self.sphere_time += gfw.delta_time
         frame = self.time * Hornet.FPS
         self.fidx = int(frame) % len(self.images[self.action])
-        if self.fidx == len(self.images['Sphere']) - 1:
+        if self.sphere_time > Hornet.SPHERE_MAX_TIME:
+            self.sphere_time = 0
             self.action = 'Sphere end'
             self.time = 0
             return BehaviorTree.SUCCESS
@@ -211,6 +223,7 @@ class Hornet:
         if self.action != 'Run':
             self.run_time = random.random()
             self.action = 'Run'
+            self.sounds[Hornet.SOUND_NUM['Run']].play()
         if self.pos[0] < self.target.pos[0]:
             self.delta = -3, 0
         else:
@@ -231,9 +244,9 @@ class Hornet:
         if self.action == 'Dash' or self.action == 'Dash end':
             return BehaviorTree.SUCCESS
         if self.action != 'Dash ready':
-            if self.dash_cool_time > Hornet.DASH_COOL:
+            if self.dash_cool:
                 self.action = 'Dash ready'
-                self.dash_cool_time = 0
+                self.sounds[random.choice([1, 3])].play()
                 self.time = 0
                 if self.pos[0] < self.target.pos[0]:
                     self.flip = 'h'
@@ -247,11 +260,12 @@ class Hornet:
         self.fidx = int(frame) % len(self.images[self.action])
         if self.fidx == len(self.images['Dash ready']) - 1:
             self.action = 'Dash'
+            self.sounds[Hornet.SOUND_NUM['Dash']].play()
             self.time = 0
             if self.pos[0] < self.target.pos[0]:
-                self.delta = 20, 0
+                self.delta = 25, 0
             else:
-                self.delta = -20, 0
+                self.delta = -25, 0
             return BehaviorTree.SUCCESS
         return BehaviorTree.RUNNING
 
@@ -417,6 +431,37 @@ class Hornet:
         Hornet.images = images
         print('Hornet %d images loaded' % (count))
         return images
+
+    @staticmethod
+    def load_sound(sound):
+        if sound in Hornet.sounds:
+            return Hornet.sounds[sound]
+
+        file_fmt = 'res/Sound/hornet/%s'
+        fn = file_fmt % sound
+        s = gfw.sound.load_w(fn)
+        Hornet.sounds[sound] = s
+        print('%s sound loaded' % (sound))
+        return s
+
+    @staticmethod
+    def load_all_sounds():
+        sounds = []
+        sounds.append(Hornet.load_sound('Hornet_Fight_Yell_03.wav'))
+        sounds.append(Hornet.load_sound('Hornet_Fight_Yell_04.wav'))
+        sounds.append(Hornet.load_sound('Hornet_Fight_Yell_05.wav'))
+        sounds.append(Hornet.load_sound('Hornet_Fight_Yell_06.wav'))
+        sounds.append(Hornet.load_sound('Hornet_Fight_Yell_07.wav'))
+        sounds.append(Hornet.load_sound('Hornet_Fight_Yell_08.wav'))
+        sounds.append(Hornet.load_sound('Hornet_Fight_Yell_09.wav'))
+        sounds.append(Hornet.load_sound('Hornet_Fight_Death_01.wav'))
+        sounds.append(Hornet.load_sound('hornet_dash.wav'))
+        sounds.append(Hornet.load_sound('hornet_footstep_run_loop.wav'))
+        sounds.append(Hornet.load_sound('hornet_ground_land.wav'))
+        sounds.append(Hornet.load_sound('hornet_jump.wav'))
+        sounds.append(Hornet.load_sound('hornet_needle_throw.wav'))
+
+        return sounds
 
     def get_bb(self):
         x, y = self.bg.to_screen(self.pos)
