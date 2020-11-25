@@ -29,6 +29,13 @@ def collides_box(a, b):
 
     return True
 
+def collides_distance(a, b):
+    d_sq = distance_sq(a.pos, b.pos)
+    radius_sum = a.radius + b.radius
+    if d_sq < radius_sum**2:
+        return True
+    return False
+
 
 def distance_sq(point1, point2):
     x1, y1 = point1

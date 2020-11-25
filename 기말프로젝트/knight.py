@@ -307,7 +307,7 @@ class RecoilState:
     def enter(self):
         self.time = 0
         self.fidx = 0
-        self.tempdelta = self.knight.delta
+        self.tempdelta = self.knight.delta[0], 0
         self.damage_sound.play()
 
     def exit(self):
@@ -391,6 +391,7 @@ class Knight:
         if len(Knight.images) == 0:
             Knight.load_all_images()
         self.pos = 750, 3232
+        self.radius = 95
         self.delta = 0, 0
         self.time = 0.0
         self.fidx = 0

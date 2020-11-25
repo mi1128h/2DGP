@@ -13,7 +13,7 @@ canvas_width = 1280
 canvas_height = 720
 
 def enter():
-    gfw.world.init(['bg', 'platform', 'enemy', 'hornet', 'knight', 'slash', 'ui'])
+    gfw.world.init(['bg', 'platform', 'enemy', 'hornet', 'needle', 'knight', 'slash', 'ui'])
 
     bg = FixedBackground('res/KingsPass_cut.png')
     gfw.world.add(gfw.layer.bg, bg)
@@ -38,38 +38,42 @@ def enter():
     hornet.target = knight
     gfw.world.add(gfw.layer.hornet, hornet)
 
-    global bgm, opening_sting
+    global bgm, opening_sting, enemy_damaged
     bgm = gfw.sound.load_m('res/Sound/cave_wind_loop.mp3')
     opening_sting = gfw.sound.load_w('res/Sound/S75 Opening Sting-08.wav')
+    enemy_damaged = gfw.sound.load_w('res/Sound/enemy_damage.wav')
+
     opening_sting.set_volume(50)
     bgm.repeat_play()
     opening_sting.play()
+
+def knight_damaged_by(e):
+    if knight.time > Knight.Unbeatable_Time:
+        knight.time = 0.0
+        if knight.mask > 1:
+            knight.mask -= 1
+            frame.mask_stack[knight.mask].set_action('Break')
+            knight.set_state(RecoilState)
+            if knight.pos[0] <= e.pos[0]:
+                knight.flip = 'h'
+                knight.delta = (-2, 1)
+            else:
+                knight.flip = ''
+                knight.delta = (2, 1)
+        elif knight.mask == 1:
+            frame.mask_stack[0].set_action('Break')
+            knight.set_state(DeathState)
 
 def check_collide(e):
     global knight, frame
     if gobj.collides_box(knight, e):
         if e.action != 'Death':
-            if knight.time > Knight.Unbeatable_Time:
-                knight.time = 0.0
-                if knight.mask > 1:
-                    knight.mask -= 1
-                    frame.mask_stack[knight.mask].set_action('Break')
-                    knight.set_state(RecoilState)
-                    if knight.pos[0] <= e.pos[0]:
-                        knight.flip = 'h'
-                        knight.delta = (-2, 1)
-                    else:
-                        knight.flip = ''
-                        knight.delta = (2, 1)
-                elif knight.mask == 1:
-                    frame.mask_stack[0].set_action('Break')
-                    knight.set_state(DeathState)
-                    return
+            knight_damaged_by(e)
 
     for s in gfw.world.objects_at(gfw.layer.slash):
         if gobj.collides_box(s, e):
             if e.action != 'Death' and e.slashed != s:
-                e.sounds['enemy_damage.wav'].play()
+                enemy_damaged.play()
                 e.slashed = s
                 e.health -= 5
                 if knight.flip == 'h':
@@ -77,10 +81,24 @@ def check_collide(e):
                 elif knight.flip == '':
                     e.pos = gobj.point_add(e.pos, (-100, 0))
 
+def check_collides_needle():
+    global knight, hornet
+    if hornet.ball is not None:
+        if gobj.collides_distance(knight, hornet.ball):
+            knight_damaged_by(hornet.ball)
+    elif hornet.th_needle is not None:
+        if gobj.collides_box(knight, hornet.th_needle):
+            knight_damaged_by(hornet.th_needle)
+
+
 def update():
     gfw.world.update()
     for e in gfw.world.objects_at(gfw.layer.enemy):
         check_collide(e)
+
+    global hornet
+    check_collide(hornet)
+    check_collides_needle()
 
     global frame
     if frame.cracked_time >= 1.5:

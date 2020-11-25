@@ -58,7 +58,6 @@ class Crawlid:
     @staticmethod
     def load_sounds():
         load_sound('crawler.wav')
-        load_sound('enemy_damage.wav')
         load_sound('enemy_death_sword.wav')
         return Crawlid.sounds
 
