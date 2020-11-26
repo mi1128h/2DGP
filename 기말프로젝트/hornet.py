@@ -130,8 +130,6 @@ class Hornet:
     def jump_ready(self):
         if self.action == 'Death':
             return BehaviorTree.FAIL
-        if self.action == 'Jump' or self.action == 'Fall' or self.action == 'Land':
-            return BehaviorTree.SUCCESS
         if self.action != 'Jump ready':
             if self.jump_cool:
                 self.action = 'Jump ready'
@@ -156,8 +154,6 @@ class Hornet:
         return BehaviorTree.RUNNING
 
     def jump(self):
-        if self.action == 'Fall' or self.action == 'Land':
-            return BehaviorTree.SUCCESS
         if self.action != 'Jump':
             return BehaviorTree.FAIL
 
@@ -178,8 +174,6 @@ class Hornet:
         return BehaviorTree.RUNNING
 
     def fall(self):
-        if self.action == 'Land':
-            return BehaviorTree.SUCCESS
         if self.action != 'Fall':
             return BehaviorTree.FAIL
 
@@ -213,8 +207,6 @@ class Hornet:
     def sphere_ready(self):
         if self.action == 'Death':
             return BehaviorTree.FAIL
-        if self.action == 'Sphere' or self.action == 'Sphere end':
-            return BehaviorTree.SUCCESS
         if self.action != 'Sphere ready':
             if self.sphere_cool:
                 self.action = 'Sphere ready'
@@ -237,8 +229,6 @@ class Hornet:
         return BehaviorTree.RUNNING
 
     def sphere(self):
-        if self.action == 'Sphere end':
-            return BehaviorTree.SUCCESS
         if self.action != 'Sphere':
             return BehaviorTree.FAIL
 
@@ -299,8 +289,6 @@ class Hornet:
     def dash_ready(self):
         if self.action == 'Death':
             return BehaviorTree.FAIL
-        if self.action == 'Dash' or self.action == 'Dash end':
-            return BehaviorTree.SUCCESS
         if self.action != 'Dash ready':
             if self.dash_cool:
                 self.action = 'Dash ready'
@@ -328,8 +316,6 @@ class Hornet:
         return BehaviorTree.RUNNING
 
     def dash(self):
-        if self.action == 'Dash end':
-            return BehaviorTree.SUCCESS
         if self.action != 'Dash':
             return BehaviorTree.FAIL
 
@@ -363,8 +349,6 @@ class Hornet:
     def throw_ready(self):
         if self.action == 'Death':
             return BehaviorTree.FAIL
-        if self.action == 'Throw' or self.action == 'Throw end':
-            return BehaviorTree.SUCCESS
         if self.action != 'Throw ready':
             if self.throw_cool:
                 self.action = 'Throw ready'
@@ -394,8 +378,6 @@ class Hornet:
         return BehaviorTree.RUNNING
 
     def throw(self):
-        if self.action == 'Throw end':
-            return BehaviorTree.SUCCESS
         if self.action != 'Throw':
             return BehaviorTree.FAIL
 

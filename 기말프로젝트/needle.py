@@ -7,7 +7,7 @@ class Sphere_Ball:
         self.pos = h.pos
         self.time = 0
         self.fidx = 0
-        self.radius = 180
+        self.radius = 130
         self.images = self.h.images['Sphere ball']
 
     def draw(self):

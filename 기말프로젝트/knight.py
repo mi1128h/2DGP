@@ -63,7 +63,7 @@ class IdleState:
     def update(self):
         self.time += gfw.delta_time
         gobj.move_obj(self.knight)
-        frame = self.time * len(self.images) * 2
+        frame = self.time * Knight.FPS
         self.fidx = int(frame) % len(self.images)
 
         if self.knight.delta[0] != 0:
@@ -113,7 +113,7 @@ class WalkState:
     def update(self):
         self.time += gfw.delta_time
         gobj.move_obj(self.knight)
-        frame = self.time * len(self.images) * 2
+        frame = self.time * Knight.FPS
         self.fidx = int(frame) % len(self.images)
         if self.knight.delta[0] == 0:
             self.knight.set_state(IdleState)
@@ -167,13 +167,13 @@ class FallState:
         self.knight.delta = (dx, dy)
         self.time += gfw.delta_time
         gobj.move_obj(self.knight)
-        frame = self.time * len(self.images) * 2
+        frame = self.time * Knight.FPS
         if self.clockFlap == False:
             self.fidx = int(frame) % len(self.images)
             if self.fidx == len(self.images) - 1:
                 self.clockFlap = True
         else:
-            self.fidx = int(frame) % 2 + (len(self.images) - 2)
+            self.fidx = int(frame) % 3 + (len(self.images) - 3)
 
         if self.knight.pos[1] <= floor:
             dx, dy = self.knight.delta
@@ -223,7 +223,7 @@ class JumpState:
         self.time += gfw.delta_time
         gobj.move_obj(self.knight)
         tfidx = self.fidx
-        frame = self.time * len(self.images) * 2
+        frame = self.time * Knight.FPS
         self.fidx = int(frame) % len(self.images)
         if self.fidx < tfidx:
             self.fidx = tfidx
@@ -284,7 +284,7 @@ class SlashState:
         self.knight.delta = (dx, dy)
         self.time += gfw.delta_time
         gobj.move_obj(self.knight)
-        frame = self.time * len(self.images) * 4
+        frame = self.time * Knight.FPS * 2
 
         if frame < len(self.images):
             self.fidx = int(frame)
@@ -336,7 +336,7 @@ class RecoilState:
         gobj.move_obj(self.knight)
         self.time += gfw.delta_time
         gobj.move_obj(self.knight)
-        frame = self.time * len(self.images) * 2
+        frame = self.time * Knight.FPS * 2
         self.fidx = int(frame) % len(self.images)
 
         if frame < len(self.images):
@@ -384,8 +384,7 @@ class DeathState:
     def update(self):
         self.time += gfw.delta_time
         gobj.move_obj(self.knight)
-        frame = self.time * len(self.images)
-
+        frame = self.time * Knight.FPS * 2
         if frame < len(self.images):
             self.fidx = int(frame)
         else:
@@ -410,6 +409,7 @@ class Knight:
     images = {}
     sounds = {}
     Unbeatable_Time = 1.3
+    FPS = 10
     def __init__(self):
         if len(Knight.images) == 0:
             Knight.load_all_images()
