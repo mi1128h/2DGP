@@ -145,7 +145,6 @@ class FallState:
 
     def __init__(self):
         self.images = load_images('Fall')
-        self.land_sound = load_sound('hero_land_soft.wav')
 
     def enter(self):
         self.time = 0
@@ -153,7 +152,6 @@ class FallState:
         self.clockFlap = False
 
     def exit(self):
-        self.land_sound.play()
         pass
 
     def draw(self):
@@ -178,7 +176,7 @@ class FallState:
         if self.knight.pos[1] <= floor:
             dx, dy = self.knight.delta
             self.knight.delta = (dx, 0)
-            self.knight.set_state(IdleState)
+            self.knight.set_state(LandState)
 
     def handle_event(self, e):
         pair = (e.type, e.key)
@@ -189,6 +187,50 @@ class FallState:
 
     def get_name(self):
         return 'Fall'
+
+class LandState:
+    @staticmethod
+    def get(knight):
+        if not hasattr(LandState, 'singleton'):
+            LandState.singleton = LandState()
+            LandState.singleton.knight = knight
+        else:
+            LandState.singleton.knight = knight
+        return LandState.singleton
+
+    def __init__(self):
+        self.images = load_images('Land')
+        self.land_sound = load_sound('hero_land_soft.wav')
+
+    def enter(self):
+        self.time = 0
+        self.fidx = 0
+        self.land_sound.play()
+
+    def exit(self):
+        pass
+
+    def draw(self):
+        image = self.images[self.fidx]
+        image.composite_draw(0, self.knight.flip, *self.knight.pos_translated, image.w, image.h)
+
+    def update(self):
+        self.time += gfw.delta_time
+        gobj.move_obj(self.knight)
+        frame = self.time * Knight.FPS
+
+        if frame < len(self.images):
+            self.fidx = int(frame)
+        else:
+            self.knight.set_state(IdleState)
+
+    def handle_event(self, e):
+        pair = (e.type, e.key)
+        if pair in Knight.KEY_MAP:
+            self.knight.delta = gobj.point_add(self.knight.delta, Knight.KEY_MAP[pair])
+
+    def get_name(self):
+        return 'Land'
 
 class JumpState:
     @staticmethod
@@ -397,6 +439,7 @@ class DeathState:
         return 'Death'
 
 class Knight:
+    IMAGE_LIST = ['Idle', 'Walk', 'Fall', 'Land', 'Jump', 'Slash', 'SlashEffect', 'Recoil', 'Death']
     KEY_MAP = {
         (SDL_KEYDOWN, SDLK_LEFT):  (-5, 0),
         (SDL_KEYDOWN, SDLK_RIGHT): (5, 0),
@@ -425,8 +468,8 @@ class Knight:
 
     @staticmethod
     def load_all_images():
-        for action in ['Idle', 'Walk', 'Fall', 'Jump', 'Slash', 'SlashEffect', 'Recoil', 'Death']:
-            load_images(action)
+        for image in Knight.IMAGE_LIST:
+            load_images(image)
 
     def set_state(self, clazz):
         if self.state != None:
