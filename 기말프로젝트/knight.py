@@ -228,6 +228,11 @@ class LandState:
         pair = (e.type, e.key)
         if pair in Knight.KEY_MAP:
             self.knight.delta = gobj.point_add(self.knight.delta, Knight.KEY_MAP[pair])
+        elif pair == Knight.KEYDOWN_SPACE:
+            dx, dy = self.knight.delta
+            dy = 15
+            self.knight.delta = (dx, dy)
+            self.knight.set_state(JumpState)
 
     def get_name(self):
         return 'Land'
