@@ -1,10 +1,9 @@
 from pico2d import *
 import gfw
 import gobj
-import knight
 
 class Health:
-    action = ['Appear', 'Break', 'Empty', 'Idle']
+    action = ['Appear', 'Break', 'Empty', 'Idle', 'Refill']
     images = {}
     def __init__(self):
         self.pos = (0, 0)
@@ -28,7 +27,7 @@ class Health:
 
     def update(self):
         self.time += gfw.delta_time
-        if self.action == 'Appear':
+        if self.action == 'Appear' or self.action == 'Refill':
             if self.fidx == len(self.images[self.action]) - 1:
                 self.set_action('Idle')
         elif self.action == 'Break':
@@ -110,11 +109,22 @@ class Frame:
             if m.action != 'Idle' and m.action != 'Empty':
                 idleupdate = False
 
+        if idleupdate == False:
+            for m in self.mask_stack:
+                if m.action == 'Idle':
+                    m.time = 0
+
         if idleupdate:
             for m in self.mask_stack:
                 m.update()
 
-    def handle_event(self):
+    def refill_all(self):
+        self.k.mask = 5
+        for m in self.mask_stack:
+            if m.action == 'Empty':
+                m.set_action('Refill')
+
+    def handle_event(self, e):
         pass
 
     @staticmethod

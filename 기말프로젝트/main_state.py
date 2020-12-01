@@ -76,9 +76,9 @@ def check_collide(e):
                 enemy_damaged.play()
                 e.slashed = s
                 e.health -= 5
-                if knight.flip == 'h':
+                if s.flip == 'h':
                     e.pos = gobj.point_add(e.pos, (100, 0))
-                elif knight.flip == '':
+                elif s.flip == '':
                     e.pos = gobj.point_add(e.pos, (-100, 0))
 
 def check_collides_needle():
