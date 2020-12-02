@@ -341,9 +341,6 @@ class SlashState:
             else:
                 self.knight.set_state(IdleState)
 
-    def get_name(self):
-        return 'Slash'
-
     def handle_event(self, e):
         pair = (e.type, e.key)
         if pair in Knight.KEY_MAP:
@@ -351,6 +348,9 @@ class SlashState:
         elif pair == Knight.KEYUP_SPACE:
             dx, dy = self.knight.delta
             self.knight.delta = (dx, 0)
+
+    def get_name(self):
+        return 'Slash'
 
 class RecoilState:
     @staticmethod
