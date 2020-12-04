@@ -8,24 +8,34 @@ from hornet import Hornet
 from HUD import Frame
 import game_end_state
 from background import FixedBackground
+from tilebg import Background
 
 canvas_width = 1280
 canvas_height = 720
 
 def enter():
     gfw.world.init(['bg', 'platform', 'enemy', 'hornet', 'needle', 'knight', 'slash', 'ui'])
+    gfw.world.init(['bg_base', 'bg_back', 'bg_platform', 'enemy', 'hornet', 'needle', 'knight', 'slash', 'bg_front', 'ui'])
 
-    bg = FixedBackground('res/KingsPass_cut.png')
-    gfw.world.add(gfw.layer.bg, bg)
+    bg_base = FixedBackground('res/map/base.png')
+    gfw.world.add(gfw.layer.bg_base, bg_base)
+    bg_back = FixedBackground('res/map/back.png')
+    gfw.world.add(gfw.layer.bg_back, bg_back)
+    bg_platform = FixedBackground('res/map/platform.png')
+    gfw.world.add(gfw.layer.bg_platform, bg_platform)
+    bg_front = FixedBackground('res/map/front.png')
+    gfw.world.add(gfw.layer.bg_front, bg_front)
 
     crawlid = Crawlid()
-    crawlid.bg = bg
+    crawlid.bg = bg_platform
     gfw.world.add(gfw.layer.enemy, crawlid)
 
     global knight
     knight = Knight()
-    knight.bg = bg
-    bg.target = knight
+    knight.bg = bg_platform
+    bg_back.target = knight
+    bg_platform.target = knight
+    bg_front.target = knight
     gfw.world.add(gfw.layer.knight, knight)
 
     global frame
@@ -34,7 +44,7 @@ def enter():
 
     global hornet
     hornet = Hornet()
-    hornet.bg = bg
+    hornet.bg = bg_platform
     hornet.target = knight
     gfw.world.add(gfw.layer.hornet, hornet)
 
@@ -95,6 +105,9 @@ def update():
     gfw.world.update()
     for e in gfw.world.objects_at(gfw.layer.enemy):
         check_collide(e)
+        d = abs(gobj.distance(knight.pos, e.pos))
+        v = int(clamp(0, 50 - d, 50))
+        e.sounds['crawler.wav'].set_volume(v)
 
     global hornet
     check_collide(hornet)

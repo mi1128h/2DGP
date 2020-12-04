@@ -34,7 +34,7 @@ def load_sound(sound):
     return s
 
 gravity = 0.4
-floor = 480
+floor = 256
 
 class IdleState:
     @staticmethod
@@ -461,7 +461,7 @@ class Knight:
     def __init__(self):
         if len(Knight.images) == 0:
             Knight.load_all_images()
-        self.pos = 750, 3232
+        self.pos = 700, 2400
         self.radius = 95
         self.delta = 0, 0
         self.time = 0.0
