@@ -8,7 +8,7 @@ from hornet import Hornet
 from HUD import Frame
 import game_end_state
 from background import FixedBackground
-from platform import Platform
+from pf import Platform
 
 canvas_width = 1280
 canvas_height = 720
@@ -114,9 +114,13 @@ def update():
     global hornet
     check_collide(hornet)
     check_collides_needle()
+    if hornet.death_time >= 2.5:
+        game_end_state.GAME_CLEAR = True
+        gfw.change(game_end_state)
 
     global frame
     if frame.cracked_time >= 1.5:
+        game_end_state.GAME_CLEAR = False
         gfw.change(game_end_state)
 
 def draw():

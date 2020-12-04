@@ -7,15 +7,23 @@ import title_state
 canvas_width = 1280
 canvas_height = 720
 
+GAME_CLEAR = False
+
 def enter():
     gfw.world.init(['result'])
 
-    over = gobj.ImageObject('GameOver.png', (canvas_width // 2, canvas_height // 2))
-    gfw.world.add(gfw.layer.result, over)
+    global clear_bgm, over_bgm
 
-    global end_bgm
-    end_bgm = gfw.sound.load_m('res/Sound/Hollow Shade Music.mp3')
-    end_bgm.repeat_play()
+    if GAME_CLEAR:
+        clear_bgm = gfw.sound.load_m('res/Sound/S30 White Palace.mp3')
+        clear = gobj.ImageObject('GameClear.png', (canvas_width // 2, canvas_height // 2))
+        clear_bgm.repeat_play()
+        gfw.world.add(gfw.layer.result, clear)
+    else:
+        over_bgm = gfw.sound.load_m('res/Sound/Hollow Shade Music.mp3')
+        over = gobj.ImageObject('GameOver.png', (canvas_width // 2, canvas_height // 2))
+        over_bgm.repeat_play()
+        gfw.world.add(gfw.layer.result, over)
 
 def update():
     pass
@@ -30,9 +38,13 @@ def handle_event(e):
        gfw.quit()
 
 def exit():
-    global end_bgm
-    end_bgm.stop()
-    gfw.sound.unload_m('res/Sound/Hollow Shade Music.mp3')
+    global clear_bgm, over_bgm
+    if GAME_CLEAR:
+        clear_bgm.stop()
+        gfw.sound.unload_m('res/Sound/Hollow Shade Music.mp3')
+    else:
+        over_bgm.stop()
+        gfw.sound.unload_m('res/Sound/Hollow Shade Music.mp3')
     gfw.world.clear()
 
 def pause():

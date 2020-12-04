@@ -62,6 +62,7 @@ class Hornet:
         self.target = None
         self.health = 200
         self.slashed = None
+        self.death_time = 0
         self.build_behavior_tree()
 
     def draw(self):
@@ -115,6 +116,7 @@ class Hornet:
     def wounded(self):
         if self.action != 'Death':
             return BehaviorTree.FAIL
+        self.death_time += gfw.delta_time
         self.time += gfw.delta_time
         frame = self.time * Hornet.FPS
         if self.wounded_anim_end:
