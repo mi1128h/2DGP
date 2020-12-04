@@ -8,13 +8,12 @@ from hornet import Hornet
 from HUD import Frame
 import game_end_state
 from background import FixedBackground
-from tilebg import Background
+from platform import Platform
 
 canvas_width = 1280
 canvas_height = 720
 
 def enter():
-    gfw.world.init(['bg', 'platform', 'enemy', 'hornet', 'needle', 'knight', 'slash', 'ui'])
     gfw.world.init(['bg_base', 'bg_back', 'bg_platform', 'enemy', 'hornet', 'needle', 'knight', 'slash', 'bg_front', 'ui'])
 
     bg_base = FixedBackground('res/map/base.png')
@@ -25,6 +24,9 @@ def enter():
     gfw.world.add(gfw.layer.bg_platform, bg_platform)
     bg_front = FixedBackground('res/map/front.png')
     gfw.world.add(gfw.layer.bg_front, bg_front)
+
+    global platform
+    platform = Platform('res/map/platform.json')
 
     crawlid = Crawlid()
     crawlid.bg = bg_platform

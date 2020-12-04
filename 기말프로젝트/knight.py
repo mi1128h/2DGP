@@ -461,7 +461,7 @@ class Knight:
     def __init__(self):
         if len(Knight.images) == 0:
             Knight.load_all_images()
-        self.pos = 700, 2400
+        self.pos = 720, 2400
         self.radius = 95
         self.delta = 0, 0
         self.time = 0.0

@@ -19,7 +19,9 @@ class Crawlid:
         if len(Crawlid.images) == 0:
             Crawlid.load_images()
         self.health = 10
-        self.pos = (3000, 450)
+        self.pos = (2240, 900)
+        self.l = self.pos[0] - 500
+        self.r = self.pos[0] + 500
         self.delta = (-1, 0)
         self.time = 0
         self.fidx = 0
@@ -28,7 +30,7 @@ class Crawlid:
         self.slashed = None
         self.images = Crawlid.load_images()
         self.sounds = Crawlid.load_sounds()
-        self.sounds['crawler.wav'].set_volume(50)
+        self.sounds['crawler.wav'].set_volume(0)
         self.sounds['crawler.wav'].repeat_play()
 
     @staticmethod
@@ -69,10 +71,10 @@ class Crawlid:
 
     def update(self):
         if self.action != 'Death':
-            if self.pos[0] <= 2500:
+            if self.pos[0] <= self.l:
                 self.flip = 'h'
                 self.delta = (1, 0)
-            elif self.pos[0] >= 3500:
+            elif self.pos[0] >= self.r:
                 self.flip = ''
                 self.delta = (-1, 0)
             gobj.move_obj(self)

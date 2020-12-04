@@ -39,7 +39,7 @@ class Hornet:
     }
 
     def __init__(self):
-        self.pos = 1750, 480
+        self.pos = 5000, 250
         self.delta = 0, 0
         self.images = Hornet.load_images()
         self.sounds = Hornet.load_all_sounds()
