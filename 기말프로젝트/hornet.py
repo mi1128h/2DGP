@@ -10,7 +10,7 @@ gravity = 0.4
 class Hornet:
     images = {}
     sounds = {}
-    IMAGE_LIST = ['Run', 'Idle', 'Jump', 'Jump ready', 'Land', 'Death',
+    IMAGE_LIST = ['Flourish', 'Run', 'Idle', 'Jump', 'Jump ready', 'Land', 'Death',
                   'Dash', 'Dash end', 'Dash ready',
                   'Sphere ready', 'Sphere', 'Sphere end', 'Sphere ball',
                   'Throw ready', 'Throw', 'Throw end', 'Throw needle']
@@ -19,8 +19,9 @@ class Hornet:
     THROW_MAX_TIME = 0.7
     SPHERE_MAX_TIME = 1.0
     FPS = 13
-    SOUND_NUM = {'Death': 7, 'Dash': 8, 'Run': 9, 'Land': 10, 'Jump': 11, 'Sphere': 12, 'Throw': 13, 'Catch': 14}
+    SOUND_NUM = {'Death': 7, 'Dash': 8, 'Run': 9, 'Land': 10, 'Jump': 11, 'Sphere': 12, 'Throw': 13, 'Catch': 14, 'Flourish': 15}
     BB_DIFFS = {
+        'Flourish': (-55, 34, 37, -96),
         'Run' : (-41, -72, 40, 70),
         'Idle': (-27, -100, 39, 80),
         'Jump': (-27, -80, 55, 97),
@@ -68,7 +69,8 @@ class Hornet:
     def draw(self):
         pos = self.bg.to_screen(self.pos)
         if self.action != 'Dash ready' and self.action != 'Dash' and self.action != 'Dash end'\
-                and self.action != 'Throw ready' and self.action != 'Throw' and self.action != 'Throw end':
+                and self.action != 'Throw ready' and self.action != 'Throw' and self.action != 'Throw end'\
+                and self.action != 'Flourish':
             self.flip = '' if self.delta[0] < 0 else 'h'
         if self.action != 'Fall':
             images = self.images[self.action]
@@ -108,10 +110,29 @@ class Hornet:
         frame = self.time * Hornet.FPS
         self.fidx = int(frame) % len(self.images[self.action])
         if gobj.distance(self.pos, self.target.pos) < 500:
+            if self.pos[0] < self.target.pos[0]:
+                self.flip = 'h'
+            else:
+                self.flip = ''
+            self.time = 0
+            self.action = 'Flourish'
             self.bgm = gfw.sound.load_m('res/Sound/hornet/S45 HORNET-110.mp3')
             self.bgm.repeat_play()
-            self.start_attack = True
+            self.sounds[Hornet.SOUND_NUM['Flourish']].play()
         return BehaviorTree.SUCCESS
+
+    def flourish(self):
+        if self.action != 'Flourish':
+            return BehaviorTree.FAIL
+        self.time += gfw.delta_time
+        frame = self.time * Hornet.FPS
+        self.fidx = int(frame) % len(self.images[self.action])
+        if self.fidx == len(self.images['Flourish']) - 1:
+            self.action = 'Idle'
+            self.fidx = 0
+            self.start_attack = True
+            return BehaviorTree.SUCCESS
+        return BehaviorTree.RUNNING
 
     def wounded(self):
         if self.action != 'Death':
@@ -423,6 +444,11 @@ class Hornet:
             "class": SelectorNode,
             "children": [
                 {
+                    "name": "Flourish",
+                    "class": LeafNode,
+                    "function": self.flourish,
+                },
+                {
                     "name": "Idle",
                     "class": LeafNode,
                     "function": self.idle,
@@ -595,6 +621,7 @@ class Hornet:
         sounds.append(Hornet.load_sound('hornet_needle_throw.wav'))
         sounds.append(Hornet.load_sound('hornet_needle_throw_and_return.wav'))
         sounds.append(Hornet.load_sound('hornet_needle_catch.wav'))
+        sounds.append(Hornet.load_sound('Hornet_Fight_Flourish_02.wav'))
         return sounds
 
     def get_bb(self):
