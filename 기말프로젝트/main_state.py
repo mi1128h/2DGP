@@ -14,7 +14,7 @@ canvas_width = 1280
 canvas_height = 720
 
 def enter():
-    gfw.world.init(['bg_base', 'bg_back', 'bg_platform', 'enemy', 'hornet', 'needle', 'knight', 'slash', 'bg_front', 'ui'])
+    gfw.world.init(['bg_base', 'bg_back', 'bg_platform', 'platform', 'enemy', 'hornet', 'needle', 'knight', 'slash', 'bg_front', 'ui'])
 
     bg_base = FixedBackground('res/map/base.png')
     gfw.world.add(gfw.layer.bg_base, bg_base)
@@ -26,7 +26,10 @@ def enter():
     gfw.world.add(gfw.layer.bg_front, bg_front)
 
     global platform
-    platform = Platform('res/map/platform.json')
+    platform = Platform('res/map/platform_bone.json')
+    for r in platform.rects:
+        r.bg = bg_platform
+        gfw.world.add(gfw.layer.platform, r)
 
     crawlid = Crawlid()
     crawlid.bg = bg_platform
@@ -125,7 +128,7 @@ def update():
 
 def draw():
     gfw.world.draw()
-    gobj.draw_collision_box()
+    #gobj.draw_collision_box()
 
 def handle_event(e):
     global knight

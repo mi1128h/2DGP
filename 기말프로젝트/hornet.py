@@ -40,7 +40,7 @@ class Hornet:
     }
 
     def __init__(self):
-        self.pos = 5000, 250
+        self.pos = 5000, 300
         self.delta = 0, 0
         self.images = Hornet.load_images()
         self.sounds = Hornet.load_all_sounds()
@@ -85,6 +85,16 @@ class Hornet:
         x = clamp(bg_l, x, bg_r)
         y = clamp(bg_b, y, bg_t)
         self.pos = x, y
+
+        l, foot, r, _ = self.get_bb()
+        hx = (l + r) / 2
+        self.get_floor(hx, foot)
+        if self.floor is not None:
+            l, b, r, t = self.floor.get_bb()
+            if self.action == 'Idle' or self.action == 'Run':
+                if foot > t:
+                    self.action = 'Fall'
+
         if self.action != 'Death':
             if self.health <= 0:
                 self.action = 'Death'
@@ -206,12 +216,18 @@ class Hornet:
         self.delta = (dx, dy)
         gobj.move_obj(self)
         self.time += gfw.delta_time
-        if self.pos[1] <= 480:
-            x, y = self.pos
-            self.pos = x, 480
-            self.action = 'Land'
-            self.sounds[Hornet.SOUND_NUM['Land']].play()
-            return BehaviorTree.SUCCESS
+
+        _, foot, _, _ = self.get_bb()
+        if self.floor is not None:
+            l, b, r, t = self.floor.get_bb()
+            if foot <= t:
+                x, y = self.pos
+                self.pos = x, y + t - foot
+                dx, dy = self.delta
+                self.delta = (dx, 0)
+                self.action = 'Land'
+                self.sounds[Hornet.SOUND_NUM['Land']].play()
+                return BehaviorTree.SUCCESS
         return BehaviorTree.RUNNING
 
     def land(self):
@@ -634,3 +650,19 @@ class Hornet:
             return x + l, y + b, x + r, y + t
         else:
             return x - r, y + b, x - l, y + t
+
+    def get_floor(self, hx, foot):
+        sel_top = 0
+        self.floor = None
+        for p in gfw.world.objects_at(gfw.layer.platform):
+            l,b,r,t = p.get_bb()
+            if hx < l or hx > r: continue
+            mid = (b + t) // 2
+            if foot < mid: continue
+            if self.floor is None:
+                self.floor = p
+                sel_top = t
+            else:
+                if t > sel_top:
+                    self.floor = p
+                    sel_top = t

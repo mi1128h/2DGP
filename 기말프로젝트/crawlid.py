@@ -71,12 +71,28 @@ class Crawlid:
 
     def update(self):
         if self.action != 'Death':
+            l, foot, r, _ = self.get_bb()
+            cx = (l + r) / 2
+            self.get_floor(cx, foot)
+            if self.floor is not None:
+                l, b, r, t = self.floor.get_bb()
+                if foot > t:
+                    dx, dy = self.delta
+                    dy -= 0.4
+                    self.delta = (dx, dy)
+                else:
+                    x, y = self.pos
+                    self.pos = x, y + t - foot
+                    dx, dy = self.delta
+                    self.delta = (dx, 0)
+
             if self.pos[0] <= self.l:
                 self.flip = 'h'
-                self.delta = (1, 0)
+                dx, dy = self.delta
+                self.delta = (1, dy)
             elif self.pos[0] >= self.r:
                 self.flip = ''
-                self.delta = (-1, 0)
+                self.delta = (-1, dy)
             gobj.move_obj(self)
             self.time += gfw.delta_time
             frame = self.time * 10
@@ -99,3 +115,19 @@ class Crawlid:
     def get_bb(self):
         x, y = self.bg.to_screen(self.pos)
         return x - 30, y - 20, x + 30, y + 20
+
+    def get_floor(self, cx, foot):
+        sel_top = 0
+        self.floor = None
+        for p in gfw.world.objects_at(gfw.layer.platform):
+            l,b,r,t = p.get_bb()
+            if cx < l or cx > r: continue
+            mid = (b + t) // 2
+            if foot < mid: continue
+            if self.floor is None:
+                self.floor = p
+                sel_top = t
+            else:
+                if t > sel_top:
+                    self.floor = p
+                    sel_top = t

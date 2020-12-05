@@ -34,7 +34,6 @@ def load_sound(sound):
     return s
 
 gravity = 0.4
-floor = 256
 
 class IdleState:
     @staticmethod
@@ -61,6 +60,15 @@ class IdleState:
         image.composite_draw(0, self.knight.flip, *self.knight.pos_translated, image.w, image.h)
 
     def update(self):
+        _, foot, _, _ = self.knight.get_bb()
+        if self.knight.floor is not None:
+            l, b, r, t = self.knight.floor.get_bb()
+            if foot > t:
+                self.knight.set_state(FallState)
+            else:
+                x, y = self.knight.pos
+                self.knight.pos = x, y + t - foot
+
         self.time += gfw.delta_time
         gobj.move_obj(self.knight)
         frame = self.time * Knight.FPS
@@ -111,6 +119,15 @@ class WalkState:
         image.composite_draw(0, self.knight.flip, *self.knight.pos_translated, image.w, image.h)
 
     def update(self):
+        _, foot, _, _ = self.knight.get_bb()
+        if self.knight.floor is not None:
+            l, b, r, t = self.knight.floor.get_bb()
+            if foot > t:
+                self.knight.set_state(FallState)
+            else:
+                x, y = self.knight.pos
+                self.knight.pos = x, y + t - foot
+
         self.time += gfw.delta_time
         gobj.move_obj(self.knight)
         frame = self.time * Knight.FPS
@@ -173,10 +190,15 @@ class FallState:
         else:
             self.fidx = int(frame) % 3 + (len(self.images) - 3)
 
-        if self.knight.pos[1] <= floor:
-            dx, dy = self.knight.delta
-            self.knight.delta = (dx, 0)
-            self.knight.set_state(LandState)
+        _, foot, _, _ = self.knight.get_bb()
+        if self.knight.floor is not None:
+            l, b, r, t = self.knight.floor.get_bb()
+            if foot <= t:
+                x,y = self.knight.pos
+                self.knight.pos = x, y + t - foot
+                dx, dy = self.knight.delta
+                self.knight.delta = (dx, 0)
+                self.knight.set_state(LandState)
 
     def handle_event(self, e):
         pair = (e.type, e.key)
@@ -323,11 +345,17 @@ class SlashState:
 
     def update(self):
         dx, dy = self.knight.delta
-        if self.knight.pos[1] <= floor:
-            dy = 0
-        else:
-            dy -= gravity
-            dy = clamp(-10, dy, 15)
+        _, foot, _, _ = self.knight.get_bb()
+        if self.knight.floor is not None:
+            l, b, r, t = self.knight.floor.get_bb()
+            if foot > t:
+                dy -= gravity
+                dy = clamp(-10, dy, 15)
+            else:
+                x, y = self.knight.pos
+                self.knight.pos = x, y + t - foot
+                dy = 0
+
         self.knight.delta = (dx, dy)
         self.time += gfw.delta_time
         gobj.move_obj(self.knight)
@@ -336,7 +364,7 @@ class SlashState:
         if frame < len(self.images):
             self.fidx = int(frame)
         else:
-            if self.knight.pos[1] > floor:
+            if foot > t:
                 self.knight.set_state(FallState)
             else:
                 self.knight.set_state(IdleState)
@@ -469,6 +497,7 @@ class Knight:
         self.flip = 'h'
         self.mask = 5
         self.state = None
+        self.floor = None
         self.set_state(FallState)
 
     @staticmethod
@@ -492,6 +521,17 @@ class Knight:
         x = clamp(bg_l, x, bg_r)
         y = clamp(bg_b, y, bg_t)
         self.pos = x, y
+
+        l, foot, r, _ = self.get_bb()
+        kx = (l + r) / 2
+        self.get_floor(kx, foot)
+        if self.floor is not None:
+            l, b, r, t = self.floor.get_bb()
+            state = self.state.get_name()
+            if state == 'Idle' or state == 'Walk':
+                if foot > t:
+                    self.set_state(FallState)
+
         self.state.update()
         self.time += gfw.delta_time
         # flip 설정
@@ -510,3 +550,19 @@ class Knight:
     def get_bb(self):
         x,y = self.bg.to_screen(self.pos)
         return x - 20, y - 60, x + 20, y + 50
+
+    def get_floor(self, kx, foot):
+        sel_top = 0
+        self.floor = None
+        for p in gfw.world.objects_at(gfw.layer.platform):
+            l,b,r,t = p.get_bb()
+            if kx < l or kx > r: continue
+            mid = (b + t) // 2
+            if foot < mid: continue
+            if self.floor is None:
+                self.floor = p
+                sel_top = t
+            else:
+                if t > sel_top:
+                    self.floor = p
+                    sel_top = t
