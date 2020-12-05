@@ -4,6 +4,7 @@ import gfw
 import gobj
 from BehaviorTree import BehaviorTree, SelectorNode, SequenceNode, LeafNode
 from needle import Sphere_Ball, Throw_Needle
+import landform
 
 gravity = 0.4
 
@@ -86,9 +87,10 @@ class Hornet:
         y = clamp(bg_b, y, bg_t)
         self.pos = x, y
 
+        landform.get_wall(self)
         l, foot, r, _ = self.get_bb()
         hx = (l + r) / 2
-        self.get_floor(hx, foot)
+        landform.get_floor(self, hx, foot)
         if self.floor is not None:
             l, b, r, t = self.floor.get_bb()
             if self.action == 'Idle' or self.action == 'Run':
@@ -194,7 +196,7 @@ class Hornet:
         dy -= gravity
         dy = clamp(0, dy, 15)
         self.delta = (dx, dy)
-        gobj.move_obj(self)
+        landform.move(self)
         self.time += gfw.delta_time
         frame = self.time * Hornet.FPS
         self.fidx = int(frame) % len(self.images[self.action])
@@ -214,7 +216,7 @@ class Hornet:
         dy -= gravity
         dy = clamp(-15, dy, 15)
         self.delta = (dx, dy)
-        gobj.move_obj(self)
+        landform.move(self)
         self.time += gfw.delta_time
 
         _, foot, _, _ = self.get_bb()
@@ -314,7 +316,7 @@ class Hornet:
         else:
             self.delta = 3, 0
 
-        gobj.move_obj(self)
+        landform.move(self)
         self.time += gfw.delta_time
         self.run_time += gfw.delta_time
         frame = self.time * Hornet.FPS
@@ -358,7 +360,7 @@ class Hornet:
         if self.action != 'Dash':
             return BehaviorTree.FAIL
 
-        gobj.move_obj(self)
+        landform.move(self)
         self.dash_time += gfw.delta_time
         self.time += gfw.delta_time
         frame = self.time * Hornet.FPS
@@ -651,18 +653,13 @@ class Hornet:
         else:
             return x - r, y + b, x - l, y + t
 
-    def get_floor(self, hx, foot):
-        sel_top = 0
-        self.floor = None
-        for p in gfw.world.objects_at(gfw.layer.platform):
-            l,b,r,t = p.get_bb()
-            if hx < l or hx > r: continue
-            mid = (b + t) // 2
-            if foot < mid: continue
-            if self.floor is None:
-                self.floor = p
-                sel_top = t
-            else:
-                if t > sel_top:
-                    self.floor = p
-                    sel_top = t
+    def get_bb_real(self):
+        x, y = self.pos
+        if self.action != 'Fall':
+            l, b, r, t = Hornet.BB_DIFFS[self.action]
+        else:
+            l, b, r, t = Hornet.BB_DIFFS['Jump']
+        if self.flip == '':
+            return x + l, y + b, x + r, y + t
+        else:
+            return x - r, y + b, x - l, y + t

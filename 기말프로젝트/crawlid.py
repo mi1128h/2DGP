@@ -1,6 +1,7 @@
 from pico2d import *
 import gfw
 import gobj
+import landform
 
 def load_sound(sound):
     if sound in Crawlid.sounds:
@@ -20,8 +21,6 @@ class Crawlid:
             Crawlid.load_images()
         self.health = 10
         self.pos = (2240, 900)
-        self.l = self.pos[0] - 500
-        self.r = self.pos[0] + 500
         self.delta = (-1, 0)
         self.time = 0
         self.fidx = 0
@@ -73,7 +72,7 @@ class Crawlid:
         if self.action != 'Death':
             l, foot, r, _ = self.get_bb()
             cx = (l + r) / 2
-            self.get_floor(cx, foot)
+            landform.get_floor(self, cx, foot)
             if self.floor is not None:
                 l, b, r, t = self.floor.get_bb()
                 if foot > t:
@@ -86,14 +85,22 @@ class Crawlid:
                     dx, dy = self.delta
                     self.delta = (dx, 0)
 
-            if self.pos[0] <= self.l:
+            landform.get_wall(self)
+
+            tempX, tempY = self.pos
+            gobj.move_obj(self)
+            l, _, r, _ = self.get_bb_real()
+            if l <= self.wall_l:
+                self.pos = tempX, self.pos[1]
                 self.flip = 'h'
                 dx, dy = self.delta
                 self.delta = (1, dy)
-            elif self.pos[0] >= self.r:
+            elif r >= self.wall_r:
+                self.pos = tempX, self.pos[1]
                 self.flip = ''
+                dx, dy = self.delta
                 self.delta = (-1, dy)
-            gobj.move_obj(self)
+
             self.time += gfw.delta_time
             frame = self.time * 10
             self.fidx = int(frame)
@@ -116,18 +123,6 @@ class Crawlid:
         x, y = self.bg.to_screen(self.pos)
         return x - 30, y - 20, x + 30, y + 20
 
-    def get_floor(self, cx, foot):
-        sel_top = 0
-        self.floor = None
-        for p in gfw.world.objects_at(gfw.layer.platform):
-            l,b,r,t = p.get_bb()
-            if cx < l or cx > r: continue
-            mid = (b + t) // 2
-            if foot < mid: continue
-            if self.floor is None:
-                self.floor = p
-                sel_top = t
-            else:
-                if t > sel_top:
-                    self.floor = p
-                    sel_top = t
+    def get_bb_real(self):
+        x, y = self.pos
+        return x - 30, y - 20, x + 30, y + 20
