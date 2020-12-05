@@ -37,10 +37,12 @@ class RECT:
     def draw(self):
         pass
     def get_bb(self):
-        pos = (self.l + self.l+self.w)/2, (self.b + self.b+self.h)/2
         pos = self.l + self.w/2, self.b + self.h/2
         x, y = self.bg.to_screen(pos)
         return x - self.w/2, y - self.h/2, x + self.w/2, y + self.h/2
+    def get_bb_real(self):
+        x, y = self.l + self.w / 2, self.b + self.h / 2
+        return x - self.w / 2, y - self.h / 2, x + self.w / 2, y + self.h / 2
 
 class Platform:
     def __init__(self, json_fn):

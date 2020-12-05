@@ -70,7 +70,13 @@ class IdleState:
                 self.knight.pos = x, y + t - foot
 
         self.time += gfw.delta_time
+
+        tempX, tempY = self.knight.pos
         gobj.move_obj(self.knight)
+        l,_,r,_ = self.knight.get_bb_real()
+        if l < self.knight.wall_l or r > self.knight.wall_r:
+            self.knight.pos = tempX, self.knight.pos[1]
+
         frame = self.time * Knight.FPS
         self.fidx = int(frame) % len(self.images)
 
@@ -129,7 +135,12 @@ class WalkState:
                 self.knight.pos = x, y + t - foot
 
         self.time += gfw.delta_time
+        tempX, tempY = self.knight.pos
         gobj.move_obj(self.knight)
+        l, _, r, _ = self.knight.get_bb_real()
+        if l < self.knight.wall_l or r > self.knight.wall_r:
+            self.knight.pos = tempX, self.knight.pos[1]
+
         frame = self.time * Knight.FPS
         self.fidx = int(frame) % len(self.images)
         if self.knight.delta[0] == 0:
@@ -181,7 +192,13 @@ class FallState:
         dy = clamp(-10, dy, 15)
         self.knight.delta = (dx, dy)
         self.time += gfw.delta_time
+
+        tempX, tempY = self.knight.pos
         gobj.move_obj(self.knight)
+        l, _, r, _ = self.knight.get_bb_real()
+        if l < self.knight.wall_l or r > self.knight.wall_r:
+            self.knight.pos = tempX, self.knight.pos[1]
+
         frame = self.time * Knight.FPS
         if self.clockFlap == False:
             self.fidx = int(frame) % len(self.images)
@@ -238,7 +255,13 @@ class LandState:
 
     def update(self):
         self.time += gfw.delta_time
+
+        tempX, tempY = self.knight.pos
         gobj.move_obj(self.knight)
+        l, _, r, _ = self.knight.get_bb_real()
+        if l < self.knight.wall_l or r > self.knight.wall_r:
+            self.knight.pos = tempX, self.knight.pos[1]
+
         frame = self.time * Knight.FPS
 
         if frame < len(self.images):
@@ -290,7 +313,13 @@ class JumpState:
         dy -= gravity
         self.knight.delta = (dx, dy)
         self.time += gfw.delta_time
+
+        tempX, tempY = self.knight.pos
         gobj.move_obj(self.knight)
+        l, _, r, _ = self.knight.get_bb_real()
+        if l < self.knight.wall_l or r > self.knight.wall_r:
+            self.knight.pos = tempX, self.knight.pos[1]
+
         tfidx = self.fidx
         frame = self.time * Knight.FPS
         self.fidx = int(frame) % len(self.images)
@@ -358,7 +387,13 @@ class SlashState:
 
         self.knight.delta = (dx, dy)
         self.time += gfw.delta_time
+
+        tempX, tempY = self.knight.pos
         gobj.move_obj(self.knight)
+        l, _, r, _ = self.knight.get_bb_real()
+        if l < self.knight.wall_l or r > self.knight.wall_r:
+            self.knight.pos = tempX, self.knight.pos[1]
+
         frame = self.time * Knight.FPS * 2
 
         if frame < len(self.images):
@@ -408,7 +443,12 @@ class RecoilState:
         image.composite_draw(0, self.knight.flip, *self.knight.pos_translated, image.w, image.h)
 
     def update(self):
+        tempX, tempY = self.knight.pos
         gobj.move_obj(self.knight)
+        l, _, r, _ = self.knight.get_bb_real()
+        if l < self.knight.wall_l or r > self.knight.wall_r:
+            self.knight.pos = tempX, self.knight.pos[1]
+
         self.time += gfw.delta_time
         gobj.move_obj(self.knight)
         frame = self.time * Knight.FPS * 2
@@ -522,6 +562,7 @@ class Knight:
         y = clamp(bg_b, y, bg_t)
         self.pos = x, y
 
+        self.get_wall()
         l, foot, r, _ = self.get_bb()
         kx = (l + r) / 2
         self.get_floor(kx, foot)
@@ -551,6 +592,10 @@ class Knight:
         x,y = self.bg.to_screen(self.pos)
         return x - 20, y - 60, x + 20, y + 50
 
+    def get_bb_real(self):
+        x, y = self.pos
+        return x - 20, y - 60, x + 20, y + 50
+
     def get_floor(self, kx, foot):
         sel_top = 0
         self.floor = None
@@ -566,3 +611,17 @@ class Knight:
                 if t > sel_top:
                     self.floor = p
                     sel_top = t
+
+    def get_wall(self):
+        left, foot, right, head = self.get_bb_real()
+        self.wall_l = 0
+        self.wall_r = 7200
+        for p in gfw.world.objects_at(gfw.layer.platform):
+            l, b, r, t = p.get_bb_real()
+            if b < foot or t > head: continue
+            if r < left:
+                if r > self.wall_l:
+                    self.wall_l = r
+            elif l > right:
+                if l < self.wall_r:
+                    self.wall_r = l
