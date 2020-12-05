@@ -37,9 +37,9 @@ class Throw_Needle:
     def update(self):
         dx, dy = self.delta
         if self.h.flip == 'h':
-            dx -= 0.6
+            dx -= 0.8
         else:
-            dx += 0.6
+            dx += 0.8
         self.delta = dx, dy
 
         gobj.move_obj(self)

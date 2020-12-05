@@ -22,8 +22,8 @@ class Hornet:
     FPS = 13
     SOUND_NUM = {'Death': 7, 'Dash': 8, 'Run': 9, 'Land': 10, 'Jump': 11, 'Sphere': 12, 'Throw': 13, 'Catch': 14, 'Flourish': 15}
     BB_DIFFS = {
-        'Flourish': (-55, 34, 37, -96),
-        'Run' : (-41, -72, 40, 70),
+        'Flourish': (-57, -115, 36, 60),
+        'Run': (-44, -93, 40, 92),
         'Idle': (-27, -100, 39, 80),
         'Jump': (-27, -80, 55, 97),
         'Jump ready': (-35, -90, 51, 60),
@@ -93,9 +93,12 @@ class Hornet:
         landform.get_floor(self, hx, foot)
         if self.floor is not None:
             l, b, r, t = self.floor.get_bb()
-            if self.action == 'Idle' or self.action == 'Run':
+            if self.action in ['Idle', 'Run']:
                 if foot > t:
                     self.action = 'Fall'
+                    if self.fall_image is None:
+                        images = self.images['Jump']
+                        self.fall_image = images[len(images) - 1]
 
         if self.action != 'Death':
             if self.health <= 0:
@@ -122,6 +125,7 @@ class Hornet:
         frame = self.time * Hornet.FPS
         self.fidx = int(frame) % len(self.images[self.action])
         if gobj.distance(self.pos, self.target.pos) < 500:
+            self.start_attack = True
             if self.pos[0] < self.target.pos[0]:
                 self.flip = 'h'
             else:
@@ -142,7 +146,6 @@ class Hornet:
         if self.fidx == len(self.images['Flourish']) - 1:
             self.action = 'Idle'
             self.fidx = 0
-            self.start_attack = True
             return BehaviorTree.SUCCESS
         return BehaviorTree.RUNNING
 
@@ -305,7 +308,7 @@ class Hornet:
         return BehaviorTree.RUNNING
 
     def run(self):
-        if self.action == 'Death':
+        if self.action == 'Death' or self.action == 'Fall':
             return BehaviorTree.FAIL
         if self.action != 'Run':
             self.run_time = random.random()
@@ -428,15 +431,25 @@ class Hornet:
             frame = self.time * Hornet.FPS
             self.fidx = int(frame) % len(self.images[self.action])
 
-        if self.throw_time == Hornet.THROW_MAX_TIME:
-            self.th_needle.delta = 0, 0
-        if self.throw_time > Hornet.THROW_MAX_TIME * 2:
-            self.throw_time = 0
-            self.action = 'Throw end'
-            gfw.world.remove(self.th_needle)
-            self.th_needle = None
-            self.time = 0
-            return BehaviorTree.SUCCESS
+        if self.throw_time >= Hornet.THROW_MAX_TIME:
+            l,_,r,_ = self.th_needle.get_bb()
+            hl,_,hr,_ = self.get_bb()
+            if self.flip == 'h':
+                if l <= hl:
+                    self.throw_time = 0
+                    self.action = 'Throw end'
+                    gfw.world.remove(self.th_needle)
+                    self.th_needle = None
+                    self.time = 0
+                    return BehaviorTree.SUCCESS
+            else:
+                if r >= hr:
+                    self.throw_time = 0
+                    self.action = 'Throw end'
+                    gfw.world.remove(self.th_needle)
+                    self.th_needle = None
+                    self.time = 0
+                    return BehaviorTree.SUCCESS
         return BehaviorTree.RUNNING
 
     def throw_end(self):

@@ -9,6 +9,7 @@ from HUD import Frame
 import game_end_state
 from background import FixedBackground
 from pf import Platform
+import landform
 
 canvas_width = 1280
 canvas_height = 720
@@ -92,9 +93,15 @@ def check_collide(e):
                 e.slashed = s
                 e.health -= 5
                 if s.flip == 'h':
-                    e.pos = gobj.point_add(e.pos, (100, 0))
+                    temp = e.delta
+                    e.delta = (100, 0)
+                    landform.move(e)
+                    e.delta = temp
                 elif s.flip == '':
-                    e.pos = gobj.point_add(e.pos, (-100, 0))
+                    temp = e.delta
+                    e.delta = (-100, 0)
+                    landform.move(e)
+                    e.delta = temp
 
 def check_collides_needle():
     global knight, hornet
@@ -131,12 +138,15 @@ def draw():
     #gobj.draw_collision_box()
 
 def handle_event(e):
-    global knight
+    global knight, frame
     if e.type == SDL_QUIT:
         gfw.quit()
     elif e.type == SDL_KEYDOWN:
         if e.key == SDLK_ESCAPE:
             gfw.pop()
+        elif e.key == SDLK_a:
+            knight.mask = 5
+            frame.refill_all()
 
     knight.handle_event(e)
 

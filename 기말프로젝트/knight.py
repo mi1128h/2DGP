@@ -260,6 +260,8 @@ class LandState:
             dy = 15
             self.knight.delta = (dx, dy)
             self.knight.set_state(JumpState)
+        elif pair == Knight.KEYDOWN_d:
+            self.knight.set_state(SlashState)
 
     def get_name(self):
         return 'Land'
@@ -371,10 +373,11 @@ class SlashState:
         if frame < len(self.images):
             self.fidx = int(frame)
         else:
-            if foot > t:
-                self.knight.set_state(FallState)
-            else:
-                self.knight.set_state(IdleState)
+            if self.knight.floor is not None:
+                if foot > t:
+                    self.knight.set_state(FallState)
+                else:
+                    self.knight.set_state(IdleState)
 
     def handle_event(self, e):
         pair = (e.type, e.key)
