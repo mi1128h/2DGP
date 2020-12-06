@@ -109,3 +109,27 @@ frame은 health(mask)를 가지고 있으며 mask의 애니메이션을 결정�
 ### crawlid   
 ![crawlid](https://user-images.githubusercontent.com/70762557/99885111-fc435900-2c75-11eb-91c7-cd9d948d94b5.PNG)   
 walk, death 애니메이션이 있다.
+
+***
+## 진행 상황   
+![진행상황](https://user-images.githubusercontent.com/70762557/101285426-7b18c400-3828-11eb-8a6a-33419c7268b4.PNG)   
+평타 위아래 공격과 의자 구현 못했습니다.   
+   
+## 주차별 커밋   
+![commits_week](https://user-images.githubusercontent.com/70762557/101285422-76541000-3828-11eb-9336-a70515c51052.png)   
+   
+## 플레이 영상 캡쳐
+![캡쳐1](https://user-images.githubusercontent.com/70762557/101285564-40635b80-3829-11eb-9d9e-ffc8bd50ee69.png)   
+![캡쳐2](https://user-images.githubusercontent.com/70762557/101285566-41948880-3829-11eb-9336-4719fc6f10a4.png)   
+   
+## 인터뷰   
+![함1](https://user-images.githubusercontent.com/70762557/101285429-7ce28780-3828-11eb-8417-cd082774b429.jpg)   
+![함2](https://user-images.githubusercontent.com/70762557/101285436-7e13b480-3828-11eb-99db-831b4fa39514.jpg)   
+이후에 점프 오류 수정했습니다.  
+   
+![강1](https://user-images.githubusercontent.com/70762557/101285438-7f44e180-3828-11eb-9175-317316035d68.jpg)   
+
+## 발표 영상   
+1차 발표: https://youtu.be/g6ptzB0o2AY   
+2차 발표: https://youtu.be/PtD4GkplWzc   
+3차 발표: https://youtu.be/yORJ5L83FPk   
