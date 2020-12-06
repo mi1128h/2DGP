@@ -25,7 +25,7 @@ def get_wall(target):
     target.wall_r = 7200
     for p in gfw.world.objects_at(gfw.layer.platform):
         l, b, r, t = p.get_bb_real()
-        if b < foot or t > head: continue
+        if b > head or t < head: continue
         if r < left:
             if r > target.wall_l:
                 target.wall_l = r
@@ -48,5 +48,5 @@ def move(target):
     tempX, tempY = target.pos
     gobj.move_obj(target)
     l, _, r, _ = target.get_bb_real()
-    if l < target.wall_l or r > target.wall_r:
+    if l <= target.wall_l or r >= target.wall_r:
         target.pos = tempX, target.pos[1]

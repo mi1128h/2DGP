@@ -234,9 +234,9 @@ class Hornet:
         tempX, tempY = self.pos
         gobj.move_obj(self)
         l, _, r, t = self.get_bb_real()
-        if l < self.wall_l or r > self.wall_r:
+        if l <= self.wall_l or r >= self.wall_r:
             self.pos = tempX, self.pos[1]
-        if t > self.ceiling:
+        if t >= self.ceiling:
             self.pos = tempX, tempY
             self.delta = dx, 0
             self.action = 'Fall'

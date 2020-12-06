@@ -27,7 +27,7 @@ def enter():
     gfw.world.add(gfw.layer.bg_front, bg_front)
 
     global platform
-    platform = Platform('res/map/platform_bone.json')
+    platform = Platform('res/map/platform.json')
     for r in platform.rects:
         r.bg = bg_platform
         gfw.world.add(gfw.layer.platform, r)

@@ -26,11 +26,13 @@ class Map:
         self.tilesets = list(map(Tileset, self.tilesets))
 
 class RECT:
-    def __init__(self, l, b, w, h):
+    def __init__(self, l, b, r, t):
         self.l = l
         self.b = b
-        self.w = w
-        self.h = h
+        self.r = r
+        self.t = t
+        self.w = r-l
+        self.h = t-b
 
     def update(self):
         pass
@@ -41,22 +43,17 @@ class RECT:
         x, y = self.bg.to_screen(pos)
         return x - self.w/2, y - self.h/2, x + self.w/2, y + self.h/2
     def get_bb_real(self):
-        x, y = self.l + self.w / 2, self.b + self.h / 2
-        return x - self.w / 2, y - self.h / 2, x + self.w / 2, y + self.h / 2
+        return self.l, self.b, self.r, self.t
 
 class Platform:
     def __init__(self, json_fn):
-        with open(json_fn) as f:
-            self.map = Map(json.load(f))
-        self.tileset = self.map.tilesets[0]
-        self.layer = self.map.layers[0]
+        self.json_fn = json_fn
         self.rects = []
         self.load_rects()
 
     def load_rects(self):
-        for ti in range(0, len(self.layer.data) - 1):
-            if self.layer.data[ti] != 0:
-                tile = self.layer.data[ti]
-                l, b, w, h = self.tileset.getRectForTile(tile)
-                rect = RECT(l, b, w, h)
-                self.rects.append(rect)
+        with open(self.json_fn) as f:
+            data = json.load(f)
+            for d in data:
+                r = RECT(d['l'], d['b'], d['r'], d['t'])
+                self.rects.append(r)

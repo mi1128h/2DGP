@@ -100,7 +100,7 @@ class Crawlid:
                 self.pos = tempX, self.pos[1]
                 self.flip = ''
                 self.delta = (-1, dy)
-            if t > self.ceiling:
+            if t >= self.ceiling:
                 self.pos = tempX, tempY
                 self.delta = dx, 0
 
