@@ -62,7 +62,7 @@ class Hornet:
         self.fidx = 0
         self.flip = 'h'
         self.target = None
-        self.health = 2
+        self.health = 200
         self.slashed = None
         self.death_time = 0
         self.build_behavior_tree()
