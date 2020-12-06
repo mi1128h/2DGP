@@ -125,16 +125,17 @@ class Hornet:
         frame = self.time * Hornet.FPS
         self.fidx = int(frame) % len(self.images[self.action])
         if gobj.distance(self.pos, self.target.pos) < 500:
-            self.start_attack = True
-            if self.pos[0] < self.target.pos[0]:
-                self.flip = 'h'
-            else:
-                self.flip = ''
-            self.time = 0
-            self.action = 'Flourish'
-            self.bgm = gfw.sound.load_m('res/Sound/hornet/S45 HORNET-110.mp3')
-            self.bgm.repeat_play()
-            self.sounds[Hornet.SOUND_NUM['Flourish']].play()
+            if self.start_attack == False:
+                self.start_attack = True
+                if self.pos[0] < self.target.pos[0]:
+                    self.flip = 'h'
+                else:
+                    self.flip = ''
+                self.time = 0
+                self.action = 'Flourish'
+                self.bgm = gfw.sound.load_m('res/Sound/hornet/S45 HORNET-110.mp3')
+                self.bgm.repeat_play()
+                self.sounds[Hornet.SOUND_NUM['Flourish']].play()
         return BehaviorTree.SUCCESS
 
     def flourish(self):

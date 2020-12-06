@@ -11,6 +11,9 @@ GAME_CLEAR = False
 
 def enter():
     gfw.world.init(['result'])
+    global end_time, change
+    end_time = 0
+    change = False
 
     global clear_bgm, over_bgm
 
@@ -26,16 +29,21 @@ def enter():
         gfw.world.add(gfw.layer.result, over)
 
 def update():
-    pass
+    global end_time
+    end_time += gfw.delta_time
 
 def draw():
     gfw.world.draw()
 
 def handle_event(e):
-   if e.type == SDL_KEYDOWN or e.type == SDL_MOUSEBUTTONDOWN:
-       gfw.change(title_state)
-   elif e.type == SDL_QUIT:
-       gfw.quit()
+    global end_time, change
+    if end_time > 2.0:
+        if change == False:
+            if e.type == SDL_KEYDOWN or e.type == SDL_MOUSEBUTTONDOWN:
+                change = True
+                gfw.change(title_state)
+            elif e.type == SDL_QUIT:
+                gfw.quit()
 
 def exit():
     global clear_bgm, over_bgm
