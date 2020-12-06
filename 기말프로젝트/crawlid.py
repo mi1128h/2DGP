@@ -86,20 +86,23 @@ class Crawlid:
                     self.delta = (dx, 0)
 
             landform.get_wall(self)
+            landform.get_ceiling(self)
 
             tempX, tempY = self.pos
+            dx, dy = self.delta
             gobj.move_obj(self)
-            l, _, r, _ = self.get_bb_real()
+            l, _, r, t = self.get_bb_real()
             if l <= self.wall_l:
                 self.pos = tempX, self.pos[1]
                 self.flip = 'h'
-                dx, dy = self.delta
                 self.delta = (1, dy)
             elif r >= self.wall_r:
                 self.pos = tempX, self.pos[1]
                 self.flip = ''
-                dx, dy = self.delta
                 self.delta = (-1, dy)
+            if t > self.ceiling:
+                self.pos = tempX, tempY
+                self.delta = dx, 0
 
             self.time += gfw.delta_time
             frame = self.time * 10

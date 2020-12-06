@@ -297,7 +297,18 @@ class JumpState:
         dy -= gravity
         self.knight.delta = (dx, dy)
         self.time += gfw.delta_time
-        landform.move(self.knight)
+
+        landform.get_ceiling(self.knight)
+
+        tempX, tempY = self.knight.pos
+        gobj.move_obj(self.knight)
+        l, _, r, t = self.knight.get_bb_real()
+        if l < self.knight.wall_l or r > self.knight.wall_r:
+            self.knight.pos = tempX, self.knight.pos[1]
+        if t > self.knight.ceiling:
+            self.knight.pos = tempX, tempY
+            self.knight.delta = dx, 0
+            self.knight.set_state(FallState)
 
         tfidx = self.fidx
         frame = self.time * Knight.FPS

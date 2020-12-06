@@ -33,6 +33,16 @@ def get_wall(target):
             if l < target.wall_r:
                 target.wall_r = l
 
+def get_ceiling(target):
+    left, foot, right, head = target.get_bb_real()
+    target.ceiling = 2400
+    for p in gfw.world.objects_at(gfw.layer.platform):
+        l, b, r, t = p.get_bb_real()
+        if r < left or l > right: continue
+        if b > head:
+            if b < target.ceiling:
+                target.ceiling = b
+
 
 def move(target):
     tempX, tempY = target.pos

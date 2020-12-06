@@ -199,10 +199,26 @@ class Hornet:
         dy -= gravity
         dy = clamp(0, dy, 15)
         self.delta = (dx, dy)
-        landform.move(self)
+
         self.time += gfw.delta_time
         frame = self.time * Hornet.FPS
         self.fidx = int(frame) % len(self.images[self.action])
+
+        landform.get_ceiling(self)
+        tempX, tempY = self.pos
+        gobj.move_obj(self)
+        l, _, r, t = self.get_bb_real()
+        if l < self.wall_l or r > self.wall_r:
+            self.pos = tempX, self.pos[1]
+        if t > self.ceiling:
+            self.pos = tempX, tempY
+            self.delta = dx, 0
+            self.action = 'Fall'
+            self.time = 0
+            images = self.images['Jump']
+            self.fall_image = images[len(images) - 1]
+            return BehaviorTree.SUCCESS
+
         if self.fidx == len(self.images['Jump']) - 1:
             self.action = 'Fall'
             self.time = 0
