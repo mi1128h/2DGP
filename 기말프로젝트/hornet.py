@@ -55,14 +55,14 @@ class Hornet:
         self.sphere_time = 0
         self.ball = None
         self.start_attack = False
-        self.dash_cool = True
-        self.jump_cool = True
-        self.sphere_cool = True
-        self.throw_cool = True
+        self.dash_cool = False
+        self.jump_cool = False
+        self.sphere_cool = False
+        self.throw_cool = False
         self.fidx = 0
         self.flip = 'h'
         self.target = None
-        self.health = 200
+        self.health = 2
         self.slashed = None
         self.death_time = 0
         self.build_behavior_tree()
@@ -71,7 +71,7 @@ class Hornet:
         pos = self.bg.to_screen(self.pos)
         if self.action != 'Dash ready' and self.action != 'Dash' and self.action != 'Dash end'\
                 and self.action != 'Throw ready' and self.action != 'Throw' and self.action != 'Throw end'\
-                and self.action != 'Flourish':
+                and self.action != 'Flourish' and self.action != 'Death':
             self.flip = '' if self.delta[0] < 0 else 'h'
         if self.action != 'Fall':
             images = self.images[self.action]
@@ -106,6 +106,7 @@ class Hornet:
                 self.sounds[Hornet.SOUND_NUM['Death']].play()
                 self.bgm.stop()
                 self.time = 0
+                self.fdix = 0
                 if self.th_needle is not None:
                     gfw.world.remove(self.th_needle)
                 if self.ball is not None:
@@ -114,10 +115,20 @@ class Hornet:
         self.bt.run()
 
     def idle(self):
-        self.jump_cool = random.choice([True, False])
-        self.dash_cool = random.choice([True, False])
-        self.throw_cool = random.choice([True, False])
-        self.sphere_cool = random.choice([True, False])
+        cool = random.choice(['jump', 'sphere', 'dash', 'throw'])
+        self.jump_cool = False
+        self.sphere_cool = False
+        self.dash_cool = False
+        self.throw_cool = False
+        if cool == 'jump':
+            self.jump_cool = True
+        elif cool == 'sphere':
+            self.jump_cool = True
+            self.sphere_cool = True
+        elif cool == 'dash':
+            self.dash_cool = True
+        elif cool == 'throw':
+            self.throw_cool = True
         if self.start_attack:
             return BehaviorTree.FAIL
         self.action = 'Idle'
@@ -156,6 +167,20 @@ class Hornet:
         self.death_time += gfw.delta_time
         self.time += gfw.delta_time
         frame = self.time * Hornet.FPS
+
+        dx, dy = self.delta
+        dy -= gravity
+        dy = clamp(-15, dy, 15)
+        self.delta = (dx, dy)
+        landform.move(self)
+        _, foot, _, _ = self.get_bb()
+        if self.floor is not None:
+            l, b, r, t = self.floor.get_bb()
+            if foot <= t:
+                x, y = self.pos
+                self.pos = x, y + t - foot
+                self.delta = (0, 0)
+
         if self.wounded_anim_end:
             self.fidx = int(frame) % 5 + (len(self.images[self.action]) - 5)
         else:
