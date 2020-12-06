@@ -121,7 +121,7 @@ class Frame:
     def refill_all(self):
         self.k.mask = 5
         for m in self.mask_stack:
-            if m.action == 'Empty':
+            if m.action == 'Empty' or m.action == 'Break':
                 m.set_action('Refill')
 
     def handle_event(self, e):
