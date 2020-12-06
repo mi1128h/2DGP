@@ -394,9 +394,19 @@ class SlashState:
         pair = (e.type, e.key)
         if pair in Knight.KEY_MAP:
             self.knight.delta = gobj.point_add(self.knight.delta, Knight.KEY_MAP[pair])
+        elif pair == Knight.KEYDOWN_SPACE:
+            _, foot, _, _ = self.knight.get_bb()
+            if self.knight.floor is not None:
+                l, b, r, t = self.knight.floor.get_bb()
+                if foot <= t:
+                    dx, dy = self.knight.delta
+                    dy = 15
+                    self.knight.delta = (dx, dy)
+                    self.knight.set_state(JumpState)
         elif pair == Knight.KEYUP_SPACE:
             dx, dy = self.knight.delta
-            self.knight.delta = (dx, 0)
+            if dy > 0:
+                self.knight.delta = (dx, 0)
 
     def get_name(self):
         return 'Slash'

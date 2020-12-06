@@ -115,7 +115,7 @@ class Hornet:
         self.bt.run()
 
     def idle(self):
-        cool = random.choice(['jump', 'sphere', 'dash', 'throw'])
+        cool = random.choice(['jump', 'sphere', 'dash', 'throw', 'None'])
         self.jump_cool = False
         self.sphere_cool = False
         self.dash_cool = False
