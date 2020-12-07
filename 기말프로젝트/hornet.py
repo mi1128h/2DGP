@@ -37,7 +37,7 @@ class Hornet:
         'Sphere end': (-50, -98, 50, 80),
         'Throw ready': (-50, -100, 50, 70),
         'Throw': (-50, -90, 50, 10),
-        'Throw end': (-50, -90, 57, 10),
+        'Throw end': (-50, -90, 50, 10),
     }
 
     def __init__(self):
