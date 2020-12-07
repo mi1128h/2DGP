@@ -25,8 +25,8 @@ def get_wall(target):
     target.wall_r = 7200
     for p in gfw.world.objects_at(gfw.layer.platform):
         l, b, r, t = p.get_bb_real()
-        if b > head and t > head: continue
-        if b < foot and t < foot: continue
+        if b >= head and t >= head: continue
+        if b <= foot and t <= foot: continue
         if r < left:
             if r > target.wall_l:
                 target.wall_l = r
