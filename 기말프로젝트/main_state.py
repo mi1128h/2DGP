@@ -40,8 +40,11 @@ def enter():
     knight = Knight()
     knight.bg = bg_platform
     bg_back.target = knight
+    bg_back.update()
     bg_platform.target = knight
+    bg_platform.update()
     bg_front.target = knight
+    bg_platform.update()
     gfw.world.add(gfw.layer.knight, knight)
 
     global frame
