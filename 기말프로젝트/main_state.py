@@ -44,7 +44,7 @@ def enter():
     bg_platform.target = knight
     bg_platform.update()
     bg_front.target = knight
-    bg_platform.update()
+    bg_front.update()
     gfw.world.add(gfw.layer.knight, knight)
 
     global frame
