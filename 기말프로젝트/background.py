@@ -7,6 +7,7 @@ class Background:
         self.imageName = imageName
         self.image = gfw.image.load(imageName)
         self.target = None
+        self.target_bg = None
         self.cw, self.ch = get_canvas_width(), get_canvas_height()
         self.win_rect = 0, 0, self.cw, self.ch
         self.center = self.image.w // 2, self.image.h // 2
@@ -63,9 +64,10 @@ class FixedBackground(Background):
             self.image.h - FixedBackground.MARGIN_T
         )
     def update(self):
-        if self.target is None:
-            return
-        tx, ty = self.target.pos
-        sl = clamp(0, round(tx - self.cw / 2), self.image.w - self.cw)
-        sb = clamp(0, round(ty - self.ch / 2), self.image.h - self.ch)
-        self.win_rect = sl, sb, self.cw, self.ch
+        if self.target is not None:
+            tx, ty = self.target.pos
+            sl = clamp(0, round(tx - self.cw / 2), self.image.w - self.cw)
+            sb = clamp(0, round(ty - self.ch / 2), self.image.h - self.ch)
+            self.win_rect = sl, sb, self.cw, self.ch
+        elif self.target_bg is not None:
+            self.win_rect = self.target_bg.win_rect

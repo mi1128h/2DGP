@@ -68,7 +68,7 @@ class IdleState:
                 self.knight.set_state(FallState)
             else:
                 x, y = self.knight.pos
-                self.knight.pos = x, y + t - foot
+                self.knight.pos = x, round(y + t - foot)
 
         self.time += gfw.delta_time
         landform.move(self.knight)
@@ -128,7 +128,7 @@ class WalkState:
                 self.knight.set_state(FallState)
             else:
                 x, y = self.knight.pos
-                self.knight.pos = x, y + t - foot
+                self.knight.pos = x, round(y + t - foot)
 
         self.time += gfw.delta_time
         landform.move(self.knight)
@@ -199,7 +199,7 @@ class FallState:
             l, b, r, t = self.knight.floor.get_bb()
             if foot <= t:
                 x,y = self.knight.pos
-                self.knight.pos = x, y + t - foot
+                self.knight.pos = x, round(y + t - foot)
                 dx, dy = self.knight.delta
                 self.knight.delta = (dx, 0)
                 self.knight.set_state(LandState)
@@ -372,7 +372,7 @@ class SlashState:
                 dy = clamp(-10, dy, 15)
             else:
                 x, y = self.knight.pos
-                self.knight.pos = x, y + t - foot
+                self.knight.pos = x, round(y + t - foot)
                 dy = 0
 
         self.knight.delta = (dx, dy)
