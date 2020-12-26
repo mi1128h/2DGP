@@ -69,11 +69,11 @@ def enter():
     opening_sting.play()
 
 def knight_damaged_by(e):
-    if knight.time > Knight.Unbeatable_Time:
+    if knight.time > Knight.Unbeatable_Time and knight.mask > 0:
         knight.time = 0.0
-        if knight.mask > 1:
-            knight.mask -= 1
-            frame.mask_stack[knight.mask].set_action('Break')
+        knight.mask -= 1
+        frame.mask_stack[knight.mask].set_action('Break')
+        if knight.mask > 0:
             knight.set_state(RecoilState)
             if knight.pos[0] <= e.pos[0]:
                 knight.flip = 'h'
@@ -81,8 +81,7 @@ def knight_damaged_by(e):
             else:
                 knight.flip = ''
                 knight.delta = (2, 1)
-        elif knight.mask == 1:
-            frame.mask_stack[0].set_action('Break')
+        else:
             knight.set_state(DeathState)
 
 def check_collide(e):
@@ -150,8 +149,9 @@ def handle_event(e):
         if e.key == SDLK_ESCAPE:
             gfw.pop()
         elif e.key == SDLK_a:
-            knight.mask = 5
-            frame.refill_all()
+            if knight.mask > 0:
+                knight.mask = 5
+                frame.refill_all()
 
     knight.handle_event(e)
 
