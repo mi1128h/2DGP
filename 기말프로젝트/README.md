@@ -127,8 +127,6 @@ walk, death 애니메이션이 있다.
 ![함2](https://user-images.githubusercontent.com/70762557/101285436-7e13b480-3828-11eb-99db-831b4fa39514.jpg)   
 이후에 점프 오류 수정했습니다.  
    
-![강1](https://user-images.githubusercontent.com/70762557/101285438-7f44e180-3828-11eb-9175-317316035d68.jpg)   
-
 ## 발표 영상   
 1차 발표: https://youtu.be/g6ptzB0o2AY   
 2차 발표: https://youtu.be/PtD4GkplWzc   
