@@ -17,7 +17,7 @@ canvas_height = 720
 def enter():
     gfw.world.init(['bg_base', 'bg_back', 'bg_platform', 'platform', 'enemy', 'hornet', 'needle', 'knight', 'slash', 'bg_front', 'ui'])
 
-    bg_base = FixedBackground('res/map/base.png')
+    bg_base = FixedBackground('res/map/base_.png')
     gfw.world.add(gfw.layer.bg_base, bg_base)
     bg_back = FixedBackground('res/map/back.png')
     gfw.world.add(gfw.layer.bg_back, bg_back)
@@ -43,6 +43,7 @@ def enter():
     bg_back.target = knight
     bg_platform.target_bg = bg_back
     bg_front.target_bg = bg_back
+    bg_base.target_bg = bg_back
 
     bg_back.update()
     bg_platform.update()
